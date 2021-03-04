@@ -24,7 +24,7 @@ public class UpdateResultUserCommand extends Command {
         DateFormatService formatService = new DateFormatService();
         User user = factory.createUser(0, request.getParameter("telephone_number"), request.getParameter("password"),
                 request.getParameter("surname"), request.getParameter("name"), formatService.formatStringToDate(request.getParameter("birthday")),
-                UserGender.valueOf(request.getParameter("user_gender")), request.getParameter("email"),request.getParameter("avatar"));
+                UserGender.valueOf(request.getParameter("user_gender")), request.getParameter("email"),null);
         service.updateUser(user);
         response.sendRedirect(request.getContextPath() + "/Home");
     }

@@ -30,6 +30,10 @@ userDaoImpl.createUser(user);
 userDaoImpl.updateUser(newUser);
     }
 
+    public void updateAvatar(int id,byte[]avatar) {
+        userDaoImpl.updateAvatar(id,avatar);
+    }
+
     public void deleteUser(String id) {
 userDaoImpl.deleteUser(id);
     }

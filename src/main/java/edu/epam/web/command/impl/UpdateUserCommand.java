@@ -16,7 +16,7 @@ public class UpdateUserCommand extends Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = null;
-        RequestDispatcher update = request.getRequestDispatcher("/jsp/update.jsp");
+        RequestDispatcher update = request.getRequestDispatcher("/jsp/updateUser.jsp");
         String id = request.getParameter("id");
         UserDaoService service = new UserDaoService();
         user = service.readUserById(id);

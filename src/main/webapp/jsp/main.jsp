@@ -19,6 +19,9 @@ MAIN PAGE
 <br><br>
 <a href="${pageContext.request.contextPath}/Home?action=logout">Logout</a>
 <br><br>
+<a href="${pageContext.request.contextPath}/Home?action=uploadImage">upload image</a>
+<br><br>
+
 
 </body>
 </html>

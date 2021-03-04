@@ -60,7 +60,7 @@ public class UserDaoImpl implements UserDao {
         User user = null;
         Connection connection = pool.getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM users where id=?;");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM users where id=?;");//todo
             ps.setString(1, id);
             ResultSet rs = ps.executeQuery();
             user = convertResultSet(rs);
@@ -101,7 +101,7 @@ public class UserDaoImpl implements UserDao {
     public List<User> readUsers() {
         Connection connection = pool.getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM users;");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM users;");//todo
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 User user = convertResultSet(rs);
@@ -146,6 +146,28 @@ public class UserDaoImpl implements UserDao {
                 System.out.println("Update failed. Try again!");
             } else {
                 System.out.println("User updated");
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            pool.releaseConnection(connection);
+        }
+    }
+    public void updateAvatar(int userId, byte [] avatar) {
+        String sqlStatement = "UPDATE users SET avatar=? WHERE id=?";
+        Connection connection = pool.getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sqlStatement);
+            {
+                ps.setBytes(1, avatar);
+                ps.setInt(2, userId);
+            }
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                System.out.println("Update failed. Try again!");
+            } else {
+                System.out.println("Avatar updated");
             }
             ps.close();
         } catch (SQLException e) {

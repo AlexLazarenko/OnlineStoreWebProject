@@ -27,7 +27,7 @@ public class RegistrationCommand extends Command {
         reg.forward(request, response);
         User user = factory.createUser(Integer.parseInt(request.getParameter("id")), request.getParameter("telephone_number"), request.getParameter("password"),
                 request.getParameter("surname"), request.getParameter("name"), formatService.formatStringToDate(request.getParameter("birthday")),
-                UserGender.valueOf(request.getParameter("user_gender")), request.getParameter("email"), request.getParameter("avatar"));
+                UserGender.valueOf(request.getParameter("user_gender")), request.getParameter("email"), null);
         service.createUser(user);
     }
 }

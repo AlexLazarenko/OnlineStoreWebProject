@@ -18,8 +18,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class ConnectionPool {
     private static final Logger LOGGER = LogManager.getLogger(ConnectionPool.class);
     private static volatile ConnectionPool instance;
-    private BlockingQueue<ProxyConnection> freeConnections;
-    private Queue<ProxyConnection> givenAwayConnections;
+    private final BlockingQueue<ProxyConnection> freeConnections;
+    private final Queue<ProxyConnection> givenAwayConnections;
     private final static int POOL_SIZE = 32;
 
     public static ConnectionPool getInstance() {

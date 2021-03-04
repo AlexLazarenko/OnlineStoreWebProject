@@ -145,26 +145,39 @@ public class User  {//todo
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         User user = (User) o;
-        return id == user.id &&
-                statusPoint == user.statusPoint &&
-                telephoneNumber.equals(user.telephoneNumber) &&
-                password.equals(user.password) &&
-                surname.equals(user.surname) &&
-                name.equals(user.name) &&
-                birthday.equals(user.birthday) &&
-                gender == user.gender &&
-                email.equals(user.email) &&
-                role == user.role &&
-                Arrays.equals(avatar, user.avatar) &&
-                userStatus == user.userStatus &&
-                accountStatus == user.accountStatus;
+
+        if (id != user.id) return false;
+        if (statusPoint != user.statusPoint) return false;
+        if (!telephoneNumber.equals(user.telephoneNumber)) return false;
+        if (!password.equals(user.password)) return false;
+        if (!surname.equals(user.surname)) return false;
+        if (!name.equals(user.name)) return false;
+        if (!birthday.equals(user.birthday)) return false;
+        if (gender != user.gender) return false;
+        if (!email.equals(user.email)) return false;
+        if (role != user.role) return false;
+        if (!Arrays.equals(avatar, user.avatar)) return false;
+        if (userStatus != user.userStatus) return false;
+        return accountStatus == user.accountStatus;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, telephoneNumber, password, surname, name, birthday, gender, email, statusPoint, role, userStatus, accountStatus);
+        int result = id;
+        result = 31 * result + telephoneNumber.hashCode();
+        result = 31 * result + password.hashCode();
+        result = 31 * result + surname.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + birthday.hashCode();
+        result = 31 * result + gender.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + statusPoint;
+        result = 31 * result + role.hashCode();
         result = 31 * result + Arrays.hashCode(avatar);
+        result = 31 * result + userStatus.hashCode();
+        result = 31 * result + accountStatus.hashCode();
         return result;
     }
 

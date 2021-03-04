@@ -30,6 +30,7 @@ public class CommandFactory {
         commandMap.put("registration", new RegistrationCommand());
         commandMap.put("logout", new LogoutCommand());
         commandMap.put("login", new LoginCommand());
+        commandMap.put("uploadImage", new UploadImageCommand());
     }
 
     public Command getCommand(String action) {
