@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class Dish { //todo
+public class Dish {
     private List<Ingridient> ingridientList;
     private DishStatus status;
     private String id;

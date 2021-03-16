@@ -36,7 +36,7 @@ public class ConnectionPool {
     }
 
     private ConnectionPool() {    //todo
-        String propertiesPath = PropertiesPath.DB_PROPERTIES;
+    /*    String propertiesPath = PropertiesPath.DB_PROPERTIES;
         Properties properties;
         try {
             properties = PropertiesLoader.readProperties(propertiesPath);
@@ -44,7 +44,13 @@ public class ConnectionPool {
             throw new RuntimeException("Unable to read DB properties!", e);
         }
         String url = properties.getProperty(PropertyName.DB_URL);
-        String driverName = properties.getProperty(PropertyName.DRIVER_NAME);
+        String user = properties.getProperty(PropertyName.DB_USER);
+        String password = properties.getProperty(PropertyName.DB_PASSWORD);
+        String driverName = properties.getProperty(PropertyName.DRIVER_NAME); */
+        String url = "jdbc:postgresql://localhost:5432/postgres";
+        String user = "postgres";
+        String password = "74222222";
+        String driverName = "org.postgresql.Driver";
         try {
             Class.forName(driverName);
         } catch (ClassNotFoundException e) {
@@ -54,9 +60,10 @@ public class ConnectionPool {
         givenAwayConnections = new ArrayDeque<>(POOL_SIZE);
         for (int i = 0; i < POOL_SIZE; i++) {
             try {
-                Connection connection = DriverManager.getConnection(url, properties);
+                Connection connection = DriverManager.getConnection(url, user, password);
                 ProxyConnection proxyConnection = new ProxyConnection(connection);
                 freeConnections.add(proxyConnection);
+                LOGGER.info("Connection created!");
             } catch (SQLException e) {
                 LOGGER.error("Unable to create connection!", e);
             }

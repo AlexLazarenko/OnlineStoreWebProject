@@ -24,15 +24,17 @@ public class PropertiesLoader {
      * @throws PropertyReaderException the property reader exception
      */
     public static Properties readProperties(String path) throws PropertyReaderException {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        try (InputStream inputStream = classLoader.getResourceAsStream(path)) {
-            Properties properties = new Properties();
+        Properties properties = new Properties();
+        try (FileInputStream inputStream = new FileInputStream(path)) {
             properties.load(inputStream);
             LOGGER.info("Properties were successfully read form '{}'", path);
             return properties;
+        } catch (FileNotFoundException e) {
+            LOGGER.error(e);
         } catch (IOException e) {
             throw new PropertyReaderException("Impossible to read properties!");
         }
+        return properties;
     }
 
 }

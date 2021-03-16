@@ -1,17 +1,11 @@
-
-
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<!DOCTYPE html>
-<html>
-
-<body>
+<jsp:include page="header.jsp"/>
 
 <br>
 MAIN PAGE
 <br><br>
 <a href="${pageContext.request.contextPath}/Home?action=login">Go to login page</a>
+<br><br>
+<a href="${pageContext.request.contextPath}/Home?action=registration">Go to registration page</a>
 <br><br>
 <a href="${pageContext.request.contextPath}/Home?action=showUser">Show  user</a>
 <br><br>
@@ -19,9 +13,8 @@ MAIN PAGE
 <br><br>
 <a href="${pageContext.request.contextPath}/Home?action=logout">Logout</a>
 <br><br>
-<a href="${pageContext.request.contextPath}/Home?action=uploadImage">upload image</a>
+<a href="${pageContext.request.contextPath}/Home?action=uploadImage">Upload image</a>
 <br><br>
+<a href="${pageContext.request.contextPath}/Home?action=showUser&id=<c:out value="${user.id}"/>
 
-
-</body>
-</html>
+<jsp:include page="footer.jsp"/>

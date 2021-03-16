@@ -2,7 +2,7 @@ package edu.epam.web.entity;
 
 import java.util.Objects;
 
-public class Ingridient {//todo
+public class Ingridient {
     private String id;
     private String name;
     private String info;

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
-public class User  {//todo
+public class User  {
     private int id;
     private String telephoneNumber;
     private String password;

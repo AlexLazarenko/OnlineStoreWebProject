@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: User
@@ -6,72 +7,76 @@
   To change this template use File | Settings | File Templates.
 --%>
 <jsp:include page="header.jsp"/>
-<c:out value="${messages['login']}"/>
+<style>
+    input:required:invalid {
+        border: 1px solid red;}
+    input:required:valid {
+        border: 2px solid green;}
+</style>
 <br><br>
-<form action="${pageContext.request.contextPath}/Home?action=registration" method="post">
+<form action="${pageContext.request.contextPath}/Home?action=registrationResult" method="post">
 
     Telephone number:<br>
-        <label>
-            <input type="text" name="id" value="" required>
-        </label>
-        <c:out value="${messages['id']}"/>
-    <br>
-        Login:<br>
-        <input type="text" name="username" value="" required>
-        <c:out value="${messages['username']}"/>
+    <label>
+        <input type="text" name="telephone" pattern="\d{12}" placeholder="Telephone number"
+               title="Telephone number with full code" value="" required>
+    </label>
+    <jsp:useBean id="messages" scope="request" type="java.util.HashMap"/>
+    <c:out value="${messages['telephone']}"/>
     <br>
 
     Password:<br>
-        <label>
-            <input type="text" name="password" value="" required>
-        </label>
-    <br>
-        <input type="text" name="password" value="" required>
+    <label>
+        <input type="password" name="password"  pattern="^\S{8,25}$"
+               onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Must have at least 8 characters' : '');
+           if(this.checkValidity()) form.password_two.pattern = this.value;" title="Enter your password"
+               placeholder="Password" required>    </label>
     <c:out value="${messages['password']}"/>
     <br>
-        Nickname:<br>
-        <label>
-            <input type="text" name="nickname" value="" required>
-        </label>
-        <c:out value="${messages['nickname']}"/>
-        <br>
+    Confirm password:<br>
+    <input type="password" name="password_two" pattern="^\S{8,25}$"
+           onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Please enter the same Password as above':'');"
+           title="Confirm your password" placeholder="Confirm Password" required>
+    <br>
 
-        Surname:<br>
-        <label>
-           <input type="text" name="surname" value="" required>
-       </label>
-        <c:out value="${messages['surname']}"/>
-        <br>
+    Surname:<br>
+    <label>
+        <input type="text" name="surname" minlength="2" maxlength="25" title="Your surname"
+               placeholder="Surname" value="" required>
+    </label>
+    <br>
 
-        Name:<br>
-        <label>
-           <input type="text" name="name" value="" required>
-        </label>
-        <c:out value="${messages['name']}"/>
-        <br>
+    Name:<br>
+    <label>
+        <input type="text" name="name" minlength="2" maxlength="25" title="Your name" placeholder="Name" value="" required>
+    </label>
+    <br>
 
-        Birthday:<br>
-        <label>
-            <input type="text" name="birthday" value="" required>
-        </label>
-        <c:out value="${messages['birthday']}"/>
-        <br>
+    Birthday:<br>
+    <label>
+        <input type="date" name="birthday" min="1920-01-01" max="2020-01-01" value="" required>
+    </label>
+    <br>
 
-        Gender:<br>
-        <label>
-            <input type="text" name="gender" value="" required>
-        </label>
-        <c:out value="${messages['gender']}"/>
-        <br>
+    Gender:<br>
+    <label>
+        <label><input type="radio" name="gender" value="NONE" checked> None</label><br>
+        <label><input type="radio" name="gender" value="MALE"> Male</label><br>
+        <label><input type="radio" name="gender" value="FEMALE"> Female</label>
+    </label>
+    <br>
 
-        Email:<br>
-        <label>
-            <input type="text" name="email" value="" required>
-        </label>
-        <c:out value="${messages['email']}"/>
-
+    Email:<br>
+    <label>
+        <input type="email" name="email" pattern="^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,7}"
+               title="Enter valid email like xxx@xxx.com" placeholder="Email" value="" required>
+    </label>
+    <c:out value="${messages['email']}"/>
     <br><br>
     <input type="submit" value="Submit">
+    <br>
+    <c:out value="${messages['message']}"/>
+
 </form>
 <br>
 <jsp:include page="footer.jsp"/>

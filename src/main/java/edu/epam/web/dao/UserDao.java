@@ -1,19 +1,32 @@
 package edu.epam.web.dao;
 
+import edu.epam.web.entity.AccountStatus;
 import edu.epam.web.entity.User;
+import edu.epam.web.entity.UserRole;
 
 import java.util.List;
 
 public interface UserDao {
-    void createUser(User user);
 
-    User readUserByIdPassword(String id, String password);
+    int createUser(User user);
 
-    User readUserById(String id);
+    User findByTelephoneNumberPassword(String telephoneNumber, String password);
 
-    List<User> readUsers();
+    User findUserById(int idx);
 
-    void updateUser(User newUser);
+    String findUserTelephoneNumber(String telephoneNumber);
 
-    void deleteUser(String id);
+    String findUserEmail(String email);
+
+    List<User> findUsers();
+
+    int updateUser(User newUser);
+
+    int updateAvatar(int userId, byte[] avatar);
+
+    int changeAccountStatus(int userId, AccountStatus status);
+
+    int changePassword(int userId, String password);
+
+    void deleteUser(int idx);
 }

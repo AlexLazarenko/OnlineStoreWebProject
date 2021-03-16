@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public class Order {//todo
+public class Order {
     private String id;
     private BigDecimal price;
     private Date date;

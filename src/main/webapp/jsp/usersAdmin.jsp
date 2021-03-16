@@ -5,14 +5,8 @@
   Time: 15:32
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Title</title>
-</head>
-<body>
+<jsp:include page="header.jsp"/>
+
 <table align="center" border="1" width="90%">
 <tr>
     <td colspan="10" align="center"><b>Main page</b></td>
@@ -72,5 +66,5 @@
 </c:forEach>
 
     </table>
-    </body>
-    </html>
+
+<jsp:include page="footer.jsp"/>

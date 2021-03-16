@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: User
@@ -5,35 +6,31 @@
   Time: 13:02
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
-<c:out value="${messages['login']}"/>
+<jsp:include page="header.jsp"/>
+
 <br><br>
 <form action="${pageContext.request.contextPath}/Home?action=login" method="post">
 
-    Login:<br>
+    Telephone number:<br>
     <label>
-        <input type="text" name="username" value="" required>
+        <input type="text" name="telephone" pattern="\d{12}" placeholder="Telephone number"
+               title="Telephone number with full code" value="" required>
     </label>
-    <c:out value="${messages['username']}"/>
+    <jsp:useBean id="messages" scope="request" type="java.util.HashMap"/>
+    <c:out value="${messages['telephone']}"/>
     <br>
 
     Password:<br>
     <label>
-        <input type="text" name="password" value="" required>
+        <input type="password" name="password"  pattern="^\S{8,25}$" title="Enter your password"
+               placeholder="Password" value="" required>
     </label>
     <c:out value="${messages['password']}"/>
 
     <br><br>
     <input type="submit" value="Submit">
 </form>
-<br>
+<br><br>
 <a href="${pageContext.request.contextPath}/Home?action=registration">Go to registration page</a>
-</body>
-</html>
+
+<jsp:include page="footer.jsp"/>

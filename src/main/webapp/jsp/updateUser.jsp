@@ -5,14 +5,8 @@
   Time: 19:40
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Update</title>
-</head>
-<body>
+<jsp:include page="header.jsp"/>
+
 <c:out value="${messages['login']}"/>
 <br><br>
 <form action="${pageContext.request.contextPath}/Home?action=editResult&id=${user.id}" method="post">
@@ -81,5 +75,4 @@
 <br>
 <a href="${pageContext.request.contextPath}/Home?action=showUser">Show user</a>
 <br>
-</body>
-</html>
+<jsp:include page="footer.jsp"/>

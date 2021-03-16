@@ -3,6 +3,8 @@ package edu.epam.web.dao.impl;
 import edu.epam.web.connection.ConnectionPool;
 import edu.epam.web.dao.UserDao;
 import edu.epam.web.entity.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,53 +17,55 @@ import java.util.List;
 import static java.lang.String.valueOf;
 
 public class UserDaoImpl implements UserDao {
-
+    private static final Logger logger = LogManager.getLogger(UserDaoImpl.class);
     private final List<User> users = new ArrayList<>();
     private final ConnectionPool pool = ConnectionPool.getInstance();
 
     @Override
-    public void createUser(User user) {
-        String sqlStatement = "INSERT INTO users (id,telephone_number, password, surname,name,birthday," +
-                " user_gender, email,status_point,user_role,avatar,account_status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);";
+    public int createUser(User user) {
+        String sqlStatement = "INSERT INTO users (telephone_number, password, surname,name,birthday," +
+                " user_gender, email,status_point,user_role,avatar,user_status,account_status) " +
+                "VALUES (?,?,?,?,?,CAST(? AS user_gender),?,?,CAST(? AS user_role),?,CAST(? AS user_status),CAST(? AS account_status));";
         Connection connection = pool.getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement(sqlStatement, PreparedStatement.RETURN_GENERATED_KEYS);
             {
-                ps.setInt(1, user.getId());
-                ps.setString(2, user.getTelephoneNumber());
-                ps.setString(3, user.getPassword());//todo
-                ps.setString(4, user.getSurname());
-                ps.setString(5, user.getName());
-                ps.setDate(6, (java.sql.Date) user.getBirthday());
-                ps.setString(7, valueOf(user.getGender()));
-                ps.setString(8, user.getEmail());
-                ps.setInt(9, user.getStatusPoint());
-                ps.setString(10, valueOf(user.getRole()));
-                ps.setBytes(11, user.getAvatar());
-                ps.setString(12, valueOf(user.getUserStatus()));
-                ps.setString(13, valueOf(user.getAccountStatus()));
+                ps.setString(1, user.getTelephoneNumber());
+                ps.setString(2, user.getPassword());
+                ps.setString(3, user.getSurname());
+                ps.setString(4, user.getName());
+                ps.setDate(5, new java.sql.Date (user.getBirthday().getTime()));
+                ps.setString(6, user.getGender().name());
+                ps.setString(7, user.getEmail());
+                ps.setInt(8, user.getStatusPoint());
+                ps.setString(9, user.getRole().name());
+                ps.setBytes(10, user.getAvatar());
+                ps.setString(11, user.getUserStatus().name());
+                ps.setString(12, user.getAccountStatus().name());
             }
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
-                System.out.println("Creation failed. Try again!");
+                logger.error("Creation failed. Try again!");
             } else {
-                System.out.println("User created");
+                logger.info("User created");
             }
             ps.close();
+            return affectedRows;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Creation failed. Something wrong with database",e);
         } finally {
             pool.releaseConnection(connection);
         }
+        return 0;
     }
 
     @Override
-    public User readUserByIdPassword(String id, String password) {
+    public User findByTelephoneNumberPassword(String telephoneNumber, String password) {
         User user = null;
         Connection connection = pool.getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM users where id=?;");//todo
-            ps.setString(1, id);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM users where telephone_number=?;");//todo
+            ps.setString(1, telephoneNumber);
             ResultSet rs = ps.executeQuery();
             user = convertResultSet(rs);
             rs.close();
@@ -79,12 +83,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User readUserById(String idx) {
+    public User findUserById(int idx) {
         User user = null;
         Connection connection = pool.getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM users where id=?");//todo
-            ps.setString(1, idx);
+            ps.setInt(1, idx);
             ResultSet rs = ps.executeQuery();
             user = convertResultSet(rs);
             rs.close();
@@ -98,7 +102,47 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> readUsers() {
+    public String findUserTelephoneNumber(String telephoneNumber) {
+        String storedTelephoneNumber = null;
+        Connection connection = pool.getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT telephone_number FROM users where telephone_number=?");
+            ps.setString(1, telephoneNumber);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            storedTelephoneNumber = rs.getString("telephone_number");
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            pool.releaseConnection(connection);
+        }
+        return storedTelephoneNumber;
+    }
+
+    @Override
+    public String findUserEmail(String email) {
+        String storedEmail = null;
+        Connection connection = pool.getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT email FROM users where email=?");
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            storedEmail = rs.getString("email");
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            pool.releaseConnection(connection);
+        }
+        return storedEmail;
+    }
+
+    @Override
+    public List<User> findUsers() {
         Connection connection = pool.getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM users;");//todo
@@ -118,7 +162,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateUser(User newUser) {
+    public int updateUser(User newUser) {
         int id = newUser.getId();
         String sqlStatement = "UPDATE users SET telephone_number=?,password=?,surname=?,name=?," +
                 "birthday=?,user_gender=?,email=?,status_point=?,user_role=?,avatar=?,user_status=?," +
@@ -143,18 +187,22 @@ public class UserDaoImpl implements UserDao {
             }
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
-                System.out.println("Update failed. Try again!");
+                logger.error("Update failed. Try again!");
             } else {
-                System.out.println("User updated");
+                logger.info("User updated");
             }
             ps.close();
+            return affectedRows;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Update failed. Something wrong with database",e);
         } finally {
             pool.releaseConnection(connection);
         }
+        return 0;
     }
-    public void updateAvatar(int userId, byte [] avatar) {
+
+    @Override
+    public int updateAvatar(int userId, byte[] avatar) {
         String sqlStatement = "UPDATE users SET avatar=? WHERE id=?";
         Connection connection = pool.getConnection();
         try {
@@ -165,24 +213,104 @@ public class UserDaoImpl implements UserDao {
             }
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
-                System.out.println("Update failed. Try again!");
+                logger.error("Avatar update failed. Try again!");
             } else {
-                System.out.println("Avatar updated");
+                logger.info("Avatar updated");
             }
             ps.close();
+            return affectedRows;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Avatar update failed. Something wrong with database",e);
         } finally {
             pool.releaseConnection(connection);
         }
+        return 0;
     }
 
     @Override
-    public void deleteUser(String idx) {
+    public int changeAccountStatus(int userId, AccountStatus status) {
+        String sqlStatement = "UPDATE users SET account_status=CAST(? AS account_status) WHERE id=?";
+        Connection connection = pool.getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sqlStatement);
+            {
+                ps.setString(1, status.name());
+                ps.setInt(2, userId);
+            }
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                logger.error("Account status update failed. Try again!");
+            } else {
+                logger.info("Account status updated");
+            }
+            ps.close();
+            return affectedRows;
+        } catch (SQLException e) {
+            logger.error("Account status update failed. Something wrong with database",e);
+        } finally {
+            pool.releaseConnection(connection);
+        }
+        return 0;
+    }
+
+ /*   @Override
+    public int changeUserRole(int userId, UserRole role) {
+        String sqlStatement = "UPDATE users SET user_role=CAST(? AS user_role) WHERE id=?";
+        Connection connection = pool.getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sqlStatement);
+            {
+                ps.setString(1, role.name());
+                ps.setInt(2, userId);
+            }
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                logger.error("User role update failed. Try again!");
+            } else {
+                logger.info("User role updated");
+            }
+            ps.close();
+            return affectedRows;
+        } catch (SQLException e) {
+            logger.error("User role update failed. Something wrong with database",e);
+        } finally {
+            pool.releaseConnection(connection);
+        }
+        return 0;
+    }*/
+
+    @Override
+    public int changePassword(int userId, String password) {
+        String sqlStatement = "UPDATE users SET password=? WHERE id=?";
+        Connection connection = pool.getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sqlStatement);
+            {
+                ps.setString(1, password);
+                ps.setInt(2, userId);
+            }
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                logger.error("Password update failed. Try again!");
+            } else {
+                logger.info("Password updated");
+            }
+            ps.close();
+            return affectedRows;
+        } catch (SQLException e) {
+            logger.error("Password update failed. Something wrong with database",e);
+        } finally {
+            pool.releaseConnection(connection);
+        }
+        return 0;
+    }
+
+    @Override
+    public void deleteUser(int idx) {
         Connection connection = pool.getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM users where id=?");
-            ps.setString(1, idx);
+            ps.setInt(1, idx);
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
                 System.out.println("User with this id not exist");

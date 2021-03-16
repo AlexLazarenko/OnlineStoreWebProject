@@ -31,6 +31,11 @@ public class CommandFactory {
         commandMap.put("logout", new LogoutCommand());
         commandMap.put("login", new LoginCommand());
         commandMap.put("uploadImage", new UploadImageCommand());
+        commandMap.put("uploadImageResult", new UploadImageResultCommand());
+        commandMap.put("registrationResult",new RegistrationResultCommand());
+        commandMap.put("loadImage",new LoadImageCommand());
+        commandMap.put("changePassword",new ChangePasswordCommand());
+        commandMap.put("changePasswordResult",new ChangePasswordResultCommand());
     }
 
     public Command getCommand(String action) {
