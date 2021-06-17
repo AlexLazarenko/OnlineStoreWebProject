@@ -7,7 +7,6 @@ import java.util.Objects;
 public class User  {
     private int id;
     private String telephoneNumber;
-    private String password;
     private String surname;
     private String name;
     private Date birthday;
@@ -19,12 +18,11 @@ public class User  {
     private UserStatus userStatus;
     private AccountStatus accountStatus;
 
-    public User(int id, String telephoneNumber, String password, String surname,
+    public User(int id, String telephoneNumber, String surname,
                 String name, Date birthday, UserGender gender, String email, int statusPoint,
                 UserRole role, byte[] avatar, UserStatus userStatus, AccountStatus accountStatus) {
         this.id = id;
         this.telephoneNumber = telephoneNumber;
-        this.password = password;
         this.surname = surname;
         this.name = name;
         this.birthday = birthday;
@@ -51,14 +49,6 @@ public class User  {
 
     public void setTelephoneNumber(String telephoneNumber) {
         this.telephoneNumber = telephoneNumber;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getSurname() {
@@ -151,7 +141,6 @@ public class User  {
         if (id != user.id) return false;
         if (statusPoint != user.statusPoint) return false;
         if (!telephoneNumber.equals(user.telephoneNumber)) return false;
-        if (!password.equals(user.password)) return false;
         if (!surname.equals(user.surname)) return false;
         if (!name.equals(user.name)) return false;
         if (!birthday.equals(user.birthday)) return false;
@@ -167,7 +156,6 @@ public class User  {
     public int hashCode() {
         int result = id;
         result = 31 * result + telephoneNumber.hashCode();
-        result = 31 * result + password.hashCode();
         result = 31 * result + surname.hashCode();
         result = 31 * result + name.hashCode();
         result = 31 * result + birthday.hashCode();
@@ -186,7 +174,6 @@ public class User  {
         return "User{" +
                 "id=" + id +
                 ", telephoneNumber='" + telephoneNumber + '\'' +
-                ", password='" + password + '\'' +
                 ", surname='" + surname + '\'' +
                 ", name='" + name + '\'' +
                 ", birthday=" + birthday +

@@ -3,6 +3,7 @@ package edu.epam.web.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class Order {
@@ -10,14 +11,18 @@ public class Order {
     private BigDecimal price;
     private Date date;
     private OrderStatus status;
-    private List<Dish> list;
+    private Map<Dish,Integer> dishMap;
 
-    public Order(String id, BigDecimal price, Date date, OrderStatus status, List<Dish> list) {
+    public Order(String id, BigDecimal price, Date date, OrderStatus status, Map<Dish,Integer> dishMap) {
         this.id = id;
         this.price = price;
         this.date = date;
         this.status = status;
-        this.list = list;
+        this.dishMap = dishMap;
+    }
+
+    public Order() {
+
     }
 
     public String getId() {
@@ -52,29 +57,36 @@ public class Order {
         this.status = status;
     }
 
-    public List<Dish> getList() {
-        return list;
+    public Map<Dish, Integer> getDishMap() {
+        return dishMap;
     }
 
-    public void setList(List<Dish> list) {
-        this.list = list;
+    public void setDishMap(Map<Dish, Integer> dishMap) {
+        this.dishMap = dishMap;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Order order = (Order) o;
-        return id.equals(order.id) &&
-                price.equals(order.price) &&
-                date.equals(order.date) &&
-                status == order.status &&
-                list.equals(order.list);
+
+        if (!id.equals(order.id)) return false;
+        if (!price.equals(order.price)) return false;
+        if (!date.equals(order.date)) return false;
+        if (status != order.status) return false;
+        return dishMap.equals(order.dishMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, price, date, status, list);
+        int result = id.hashCode();
+        result = 31 * result + price.hashCode();
+        result = 31 * result + date.hashCode();
+        result = 31 * result + status.hashCode();
+        result = 31 * result + dishMap.hashCode();
+        return result;
     }
 
     @Override
@@ -84,7 +96,7 @@ public class Order {
                 ", price=" + price +
                 ", date=" + date +
                 ", status=" + status +
-                ", list=" + list +
+                ", dishMap=" + dishMap +
                 '}';
     }
 }

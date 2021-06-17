@@ -1,11 +1,11 @@
 package edu.epam.web.connection;
 
-import edu.epam.web.exception.PropertyReaderException;
-import edu.epam.web.utility.PropertiesLoader;
-import edu.epam.web.utility.PropertiesPath;
+import edu.epam.web.utility.MailSenderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -15,14 +15,38 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import static edu.epam.web.utility.PropertiesPath.DB_PROPERTIES;
+import static edu.epam.web.utility.PropertiesPath.MAIL_PROPERTIES;
+
 public class ConnectionPool {
-    private static final Logger LOGGER = LogManager.getLogger(ConnectionPool.class);
+    private static final Logger logger = LogManager.getLogger(ConnectionPool.class);
     private static volatile ConnectionPool instance;
     private final BlockingQueue<ProxyConnection> freeConnections;
     private final Queue<ProxyConnection> givenAwayConnections;
     private final static int POOL_SIZE = 32;
+    private static Properties properties;
+    private static String url;
+    private static String user;
+    private static String password;
+    private static String driverName;
 
-    public static ConnectionPool getInstance() {
+    static {
+        properties = new Properties();
+        try {
+            ClassLoader classLoader = ConnectionPool.class.getClassLoader();
+            InputStream resourceAsStream = classLoader.getResourceAsStream(DB_PROPERTIES);
+            properties.load(resourceAsStream);
+            url = properties.getProperty(PropertyName.DB_URL);
+            user = properties.getProperty(PropertyName.DB_USER);
+            password = properties.getProperty(PropertyName.DB_PASSWORD);
+            driverName = properties.getProperty(PropertyName.DRIVER_NAME);
+        } catch (IOException e) {
+            logger.error("Error uploading a file", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static ConnectionPool getInstance() { //todo
         ConnectionPool localInstance = instance;
         if (localInstance == null) {
             synchronized (ConnectionPool.class) {
@@ -35,22 +59,7 @@ public class ConnectionPool {
         return localInstance;
     }
 
-    private ConnectionPool() {    //todo
-    /*    String propertiesPath = PropertiesPath.DB_PROPERTIES;
-        Properties properties;
-        try {
-            properties = PropertiesLoader.readProperties(propertiesPath);
-        } catch (PropertyReaderException e) {
-            throw new RuntimeException("Unable to read DB properties!", e);
-        }
-        String url = properties.getProperty(PropertyName.DB_URL);
-        String user = properties.getProperty(PropertyName.DB_USER);
-        String password = properties.getProperty(PropertyName.DB_PASSWORD);
-        String driverName = properties.getProperty(PropertyName.DRIVER_NAME); */
-        String url = "jdbc:postgresql://localhost:5432/postgres";
-        String user = "postgres";
-        String password = "74222222";
-        String driverName = "org.postgresql.Driver";
+    private ConnectionPool() {
         try {
             Class.forName(driverName);
         } catch (ClassNotFoundException e) {
@@ -63,9 +72,9 @@ public class ConnectionPool {
                 Connection connection = DriverManager.getConnection(url, user, password);
                 ProxyConnection proxyConnection = new ProxyConnection(connection);
                 freeConnections.add(proxyConnection);
-                LOGGER.info("Connection created!");
+                logger.info("Connection created!");
             } catch (SQLException e) {
-                LOGGER.error("Unable to create connection!", e);
+                logger.error("Unable to create connection!", e);
             }
         }
     }
@@ -87,7 +96,7 @@ public class ConnectionPool {
                 freeConnections.offer((ProxyConnection) connection);
             }
         } else {
-            LOGGER.error("Releasing connection is not proxy!");
+            logger.error("Releasing connection is not proxy!");
         }
     }
 
@@ -110,7 +119,7 @@ public class ConnectionPool {
             try {
                 DriverManager.deregisterDriver(driver);
             } catch (SQLException e) {
-                LOGGER.error("Unable to deregister driver!", e);
+                logger.error("Unable to deregister driver!", e);
             }
         });
     }

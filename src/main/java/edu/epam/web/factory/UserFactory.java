@@ -12,12 +12,25 @@ public class UserFactory {
     private static final Logger logger = LogManager.getLogger(UserFactory.class);
     private final UserValidator validator = new UserValidator();
 
-    public User createUser(int id, String telephoneNumber, String password, String surname,
+    public User createNewUser(int id, String telephoneNumber, String surname,
                            String name, Date birthday, UserGender gender, String email,
                             byte[] avatar) throws ValidatorException {
         User user = null;
-        if (validator.isUser(id, telephoneNumber, password, surname, name, birthday, gender, email)) {
-            user = new User(id, telephoneNumber, password, surname, name, birthday, gender, email, 0, UserRole.CLIENT, avatar, UserStatus.SILVER,  AccountStatus.NEW);
+        if (validator.isUser( telephoneNumber, surname, name, birthday, email)) {
+            user = new User(id, telephoneNumber, surname, name, birthday, gender, email,
+                    0, UserRole.CLIENT, avatar, UserStatus.SILVER,  AccountStatus.NEW);
+        }
+        logger.info("User created " + user);
+        return user;
+    }
+    public User createUser(int id, String telephoneNumber, String surname,
+                              String name, Date birthday, UserGender gender, String email,
+                              byte[] avatar,int statusPoint, UserRole userRole,UserStatus userStatus,
+                           AccountStatus accountStatus) throws ValidatorException {
+        User user = null;
+        if (validator.isUser( telephoneNumber, surname, name, birthday, email)) {
+            user = new User(id, telephoneNumber, surname, name, birthday, gender, email,
+                    statusPoint, userRole, avatar, userStatus, accountStatus);
         }
         logger.info("User created " + user);
         return user;

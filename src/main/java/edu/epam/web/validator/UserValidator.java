@@ -10,20 +10,12 @@ import java.util.Date;
 
 public class UserValidator {
     private static final Logger logger = LogManager.getLogger(UserValidator.class);
-    public boolean isUser(int id, String telephoneNumber, String password, String surname, String name, Date birthday, UserGender gender, String email) throws ValidatorException {
-        return isID(id) &&  isTelephoneNumber(telephoneNumber) && isPassword(password) && isSurname(surname) && isName(name) &&
-                isBirthday(birthday) && isGender(gender) && isEmail(email);
-    }
-
-    private boolean isID(int id) {
-        return true;
+    public boolean isUser(String telephoneNumber, String surname, String name, Date birthday, String email) throws ValidatorException {
+        return isTelephoneNumber(telephoneNumber) && isSurname(surname) && isName(name) &&
+                isBirthday(birthday) && isEmail(email);
     }
 
     private boolean isTelephoneNumber(String telephoneNumber) {
-        return true;
-    }
-
-    private boolean isPassword(String password) {
         return true;
     }
 
@@ -36,10 +28,6 @@ public class UserValidator {
     }
 
     private boolean isBirthday(Date birthday) {
-        return true;
-    }
-
-    private boolean isGender(UserGender gender) {
         return true;
     }
 

@@ -6,20 +6,19 @@ import java.util.List;
 import java.util.Objects;
 
 public class Dish {
-    private List<Ingridient> ingridientList;
+    private List<Ingredient> ingredientList;
     private DishStatus status;
-    private String id;
+    private int id;
     private String name;
-    private int size;
+    private String size;
     private BigDecimal price;
     private String clientInfo;
     private String staffInfo;
     private byte[] dishImage;
 
-    public Dish(List<Ingridient> ingridientList, DishStatus status, String id,
-                String name, int size, BigDecimal price, String clientInfo,
-                String staffInfo, byte[] dishImage) {
-        this.ingridientList = ingridientList;
+    public Dish( int id, String name, String size, BigDecimal price, String clientInfo,
+                String staffInfo, byte[] dishImage, DishStatus status, List<Ingredient> ingredientList ) {
+        this.ingredientList = ingredientList;
         this.status = status;
         this.id = id;
         this.name = name;
@@ -30,12 +29,12 @@ public class Dish {
         this.dishImage = dishImage;
     }
 
-    public List<Ingridient> getIngridientList() {
-        return ingridientList;
+    public List<Ingredient> getIngredientList() {
+        return ingredientList;
     }
 
-    public void setIngridientList(List<Ingridient> ingridientList) {
-        this.ingridientList = ingridientList;
+    public void setIngredientList(List<Ingredient> ingredientList) {
+        this.ingredientList = ingredientList;
     }
 
     public DishStatus getStatus() {
@@ -46,11 +45,11 @@ public class Dish {
         this.status = status;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -62,11 +61,11 @@ public class Dish {
         this.name = name;
     }
 
-    public int getSize() {
+    public String getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(String size) {
         this.size = size;
     }
 
@@ -106,21 +105,23 @@ public class Dish {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Dish dish = (Dish) o;
-        return size == dish.size &&
-                ingridientList.equals(dish.ingridientList) &&
-                status == dish.status &&
-                id.equals(dish.id) &&
-                name.equals(dish.name) &&
-                price.equals(dish.price) &&
-                clientInfo.equals(dish.clientInfo) &&
-                staffInfo.equals(dish.staffInfo) &&
-                Arrays.equals(dishImage, dish.dishImage);
+
+        if (id != dish.id) return false;
+        if (!ingredientList.equals(dish.ingredientList)) return false;
+        if (status != dish.status) return false;
+        if (!name.equals(dish.name)) return false;
+        if (!size.equals(dish.size)) return false;
+        if (!price.equals(dish.price)) return false;
+        if (!clientInfo.equals(dish.clientInfo)) return false;
+        if (!staffInfo.equals(dish.staffInfo)) return false;
+        return Arrays.equals(dishImage, dish.dishImage);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(ingridientList, status, id, name, size, price, clientInfo, staffInfo);
+        int result = Objects.hash(ingredientList, status, id, name, size, price, clientInfo, staffInfo);
         result = 31 * result + Arrays.hashCode(dishImage);
         return result;
     }
@@ -128,7 +129,7 @@ public class Dish {
     @Override
     public String toString() {
         return "Dish{" +
-                "ingridientList=" + ingridientList +
+                "ingridientList=" + ingredientList +
                 ", status=" + status +
                 ", id='" + id + '\'' +
                 ", name='" + name + '\'' +

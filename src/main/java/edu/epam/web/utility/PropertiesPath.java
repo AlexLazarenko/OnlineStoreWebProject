@@ -5,7 +5,7 @@ public class PropertiesPath {
     /**
      * The constant DB_PROPERTIES.
      */
-    public static final String DB_PROPERTIES = "src/main/resources/property/db.properties";
+    public static final String DB_PROPERTIES = "property/db.properties";
     /**
      * The constant MAIL_PROPERTIES.
      */

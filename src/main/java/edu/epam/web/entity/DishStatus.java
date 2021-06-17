@@ -4,5 +4,6 @@ public enum DishStatus {
     AVAILABLESOON,
     NEW,
     HIT,
-    DEFAULT
+    DEFAULT,
+    NOAVAILABLE
 }

@@ -3,6 +3,7 @@ package edu.epam.web.command.impl;
 import edu.epam.web.command.Command;
 import edu.epam.web.dao.UserDao;
 import edu.epam.web.dao.impl.UserDaoImpl;
+import edu.epam.web.entity.Order;
 import edu.epam.web.entity.User;
 import edu.epam.web.exception.ValidatorException;
 import edu.epam.web.service.UserDaoService;
@@ -31,21 +32,21 @@ public class LoginCommand extends Command {
 
         if (telephoneNumber != null && !telephoneNumber.isEmpty() && password != null && !password.isEmpty()) { //todo сделать отдельную команду для отрисовки формы?
             String storedPassword = EncryptPasswordUtil.encrypt(password);
+            System.out.println(storedPassword);
             User user = service.findByTelephoneNumberPassword(telephoneNumber, storedPassword);
             String storedTelephoneNumber = service.findUserTelephoneNumber(telephoneNumber);
             if (storedTelephoneNumber == null) {
                 messages.put("telephone", "Unknown telephone number, please try again");
-            } else if (service.findUserTelephoneNumber(telephoneNumber) != null && user == null) {
+            } else if ( user == null) {
                 messages.put("password", "Wrong password, please try again");
             }
             if (user != null) {
                 request.getSession().setAttribute("user", user);
+                request.getSession().setAttribute("order", new Order());
                 response.sendRedirect(request.getContextPath() + "/Home");
                 return;
             }
         }
-       // request.setAttribute("telephone", telephoneNumber);
-      //  request.setAttribute("password", password);
         request.setAttribute("messages", messages);
         RequestDispatcher login = request.getRequestDispatcher("/jsp/login.jsp");
         login.forward(request, response);

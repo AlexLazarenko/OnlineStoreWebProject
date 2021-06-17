@@ -29,7 +29,7 @@ public class ChangePasswordResultCommand extends Command {
         RequestDispatcher reg = request.getRequestDispatcher("/jsp/password.jsp");
         Map<String, String> messages = new HashMap<String, String>();
         User user = (User) request.getSession().getAttribute("user");
-        String storedPassword = user.getPassword();
+        String storedPassword = daoService.findPasswordById(user.getId());
         String password = EncryptPasswordUtil.encrypt(request.getParameter("password"));
         String newPassword = EncryptPasswordUtil.encrypt(request.getParameter("new_password"));
         String verifyPassword = EncryptPasswordUtil.encrypt(request.getParameter("password_two"));
@@ -47,7 +47,7 @@ public class ChangePasswordResultCommand extends Command {
                     messages.put("new_password", "Verifying fail. Input same passwords, please");
                 }
                 if(messages.isEmpty()){
-                    int flag = daoService.changePassword(user.getId(), newPassword);
+                    int flag = daoService.changePassword(user.getEmail(), newPassword);
                     if (flag == 0) {
                         messages.put("message", "Change password failed, please try again");
                     } else {

@@ -1,5 +1,6 @@
 package edu.epam.web.command;
 
+import edu.epam.web.exception.EmailException;
 import edu.epam.web.exception.ValidatorException;
 
 import javax.servlet.ServletException;
@@ -10,5 +11,5 @@ import java.text.ParseException;
 
 public abstract class Command {
 
-    public abstract void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, ParseException, ValidatorException;
+    public abstract void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, ParseException, ValidatorException, EmailException;
 }

@@ -1,15 +1,13 @@
 package edu.epam.web.command.impl;
 
 import edu.epam.web.command.Command;
-import edu.epam.web.dao.UserDao;
-import edu.epam.web.dao.impl.UserDaoImpl;
 import edu.epam.web.entity.User;
 import edu.epam.web.entity.UserGender;
 import edu.epam.web.exception.ValidatorException;
 import edu.epam.web.factory.UserFactory;
 import edu.epam.web.service.DateFormatService;
+import edu.epam.web.service.DishDaoService;
 import edu.epam.web.service.UserDaoService;
-import edu.epam.web.utility.EncryptPasswordUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,17 +20,14 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UpdateResultUserCommand extends Command {
-    private static final Logger logger = LogManager.getLogger(UpdateResultUserCommand.class);
-
+public class UpdateDishResultCommand extends Command {//todo
+    private static final Logger logger = LogManager.getLogger(UpdateDishResultCommand.class);
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException, ValidatorException {
-        UserFactory factory = new UserFactory();
-        UserDaoService daoService = new UserDaoService();
-        DateFormatService formatService = new DateFormatService();
-        RequestDispatcher update = request.getRequestDispatcher("/jsp/updateUser.jsp");
-        Map<String, String> messages = new HashMap<String, String>();
-
+        DishDaoService daoService = new DishDaoService();
+        RequestDispatcher update = request.getRequestDispatcher("/jsp/updateDish.jsp");
+       Map<String, String> messages = new HashMap<String, String>();
+/*
         User storedUser = (User) request.getSession().getAttribute("user");
         String telephoneNumber = request.getParameter("telephone");
         String email = request.getParameter("email");
@@ -63,9 +58,8 @@ public class UpdateResultUserCommand extends Command {
                 messages.put("message", "Update failed, please try again");
                 //     request.setAttribute("user", user);
             } else messages.put("message", "Update successful");
-        }
+        }*/
         request.setAttribute("messages", messages);
         update.forward(request, response);
     }
 }
-

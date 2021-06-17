@@ -8,11 +8,13 @@ import java.util.List;
 
 public interface UserDao {
 
-    int createUser(User user);
+    int createUser(User user,String password);
 
     User findByTelephoneNumberPassword(String telephoneNumber, String password);
 
     User findUserById(int idx);
+
+    String findPasswordById(int idx);
 
     String findUserTelephoneNumber(String telephoneNumber);
 
@@ -22,11 +24,16 @@ public interface UserDao {
 
     int updateUser(User newUser);
 
+    int updateAccountStatus(int userId,AccountStatus status);
+
     int updateAvatar(int userId, byte[] avatar);
 
-    int changeAccountStatus(int userId, AccountStatus status);
+    int updateUserRole(int userId,UserRole role);
 
-    int changePassword(int userId, String password);
+    int activateAccount(String email);
+
+    int changePassword(String email, String password);
 
     void deleteUser(int idx);
+
 }
