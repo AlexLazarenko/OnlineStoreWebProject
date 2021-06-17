@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="user" scope="session" type="edu.epam.web.entity.User"/>
 <%--
   Created by IntelliJ IDEA.
   User: User
@@ -7,70 +9,57 @@
 --%>
 <jsp:include page="header.jsp"/>
 
-<c:out value="${messages['login']}"/>
 <br><br>
-<form action="${pageContext.request.contextPath}/Home?action=editResult&id=${user.id}" method="post">
+<form action="${pageContext.request.contextPath}/Home?action=updateResultUser" method="post">
 
     Telephone number:<br>
     <label>
-        <input type="text" name="id" value="" required>
+        <input type="text" name="telephone" pattern="\d{12}" placeholder="Telephone number"
+               title="Telephone number with full code" value="${user.telephoneNumber}" required>
     </label>
-    <c:out value="${messages['id']}"/>
-    Login:<br>
-    <input type="text" name="username" value="" required>
-    <c:out value="${messages['username']}"/>
-    <br>
-
-    Password:<br>
-    <label>
-        <input type="text" name="password" value="" required>
-    </label>
-    <input type="text" name="password" value="" required>
-    <c:out value="${messages['password']}"/>
-
-    Nickname:<br>
-    <label>
-        <input type="text" name="nickname" value="" required>
-    </label>
-    <c:out value="${messages['nickname']}"/>
+    <jsp:useBean id="messages" scope="request" type="java.util.HashMap"/>
+    <c:out value="${messages['telephone']}"/>
     <br>
 
     Surname:<br>
     <label>
-        <input type="text" name="surname" value="" required>
+        <input type="text" name="surname" minlength="2" maxlength="25" title="Your surname"
+               placeholder="Surname" value="${user.surname}" required>
     </label>
-    <c:out value="${messages['surname']}"/>
     <br>
 
     Name:<br>
     <label>
-        <input type="text" name="name" value="" required>
+        <input type="text" name="name" minlength="2" maxlength="25" title="Your name" placeholder="Name" value="${user.name}"
+               required>
     </label>
-    <c:out value="${messages['name']}"/>
     <br>
 
     Birthday:<br>
     <label>
-        <input type="text" name="birthday" value="" required>
+        <input type="date" name="birthday" min="1920-01-01" max="2020-01-01" value="${user.birthday}" required>
     </label>
-    <c:out value="${messages['birthday']}"/>
     <br>
 
     Gender:<br>
     <label>
-        <input type="text" name="gender" value="" required>
+        <label><input type="radio" name="gender" value="NONE" checked> None</label><br>
+        <label><input type="radio" name="gender" value="MALE"> Male</label><br>
+        <label><input type="radio" name="gender" value="FEMALE"> Female</label>
     </label>
-    <c:out value="${messages['gender']}"/>
     <br>
 
     Email:<br>
     <label>
-        <input type="text" name="email" value="" required>
+        <input type="email" name="email" pattern="^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,7}"
+               title="Enter valid email like xxx@xxx.com" placeholder="Email" value="${user.email}" required>
     </label>
     <c:out value="${messages['email']}"/>
-
     <br><br>
     <input type="submit" value="Submit">
+    <br>
+    <c:out value="${messages['message']}"/>
+
 </form>
 <br>
 <a href="${pageContext.request.contextPath}/Home?action=showUser">Show user</a>

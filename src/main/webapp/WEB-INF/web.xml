@@ -8,4 +8,51 @@
     <welcome-file-list>
         <welcome-file>/jsp/main.jsp</welcome-file>
     </welcome-file-list>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/jsp/error404.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/jsp/error500.jsp</location>
+    </error-page>
+
+    <filter>
+        <filter-name>EncodingFilter</filter-name>
+        <filter-class>edu.epam.web.controller.filter.EncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>XSSProtectFilter</filter-name>
+        <filter-class>edu.epam.web.controller.filter.XSSProtectFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>XSSProtectFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>edu.epam.web.controller.filter.LoginFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <url-pattern>/controller</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>RoleAccessFilter</filter-name>
+        <filter-class>edu.epam.web.controller.filter.RoleAccessFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>RoleAccessFilter</filter-name>
+        <url-pattern>/controller</url-pattern>
+    </filter-mapping>
 </web-app>

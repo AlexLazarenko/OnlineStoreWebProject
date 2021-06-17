@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="header.jsp"/>
 
 <br>
@@ -11,9 +12,13 @@ MAIN PAGE
 <br><br>
 <a href="${pageContext.request.contextPath}/Home?action=showAllUsers">Show all users</a>
 <br><br>
+<a href="${pageContext.request.contextPath}/Home?action=showMenu">Menu</a>
+<br><br>
+<a href="${pageContext.request.contextPath}/Home?action=showShoppingCart">Your shopping cart</a>
+<br><br>
 <a href="${pageContext.request.contextPath}/Home?action=logout">Logout</a>
 <br><br>
-<a href="${pageContext.request.contextPath}/Home?action=uploadImage">Upload image</a>
+<a href="${pageContext.request.contextPath}/Home?action=addDish">Add new dish</a>
 <br><br>
 <a href="${pageContext.request.contextPath}/Home?action=showUser&id=<c:out value="${user.id}"/>
 

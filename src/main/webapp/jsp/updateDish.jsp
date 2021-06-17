@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: AlexLazarenko
@@ -7,48 +8,61 @@
 --%>
 <jsp:include page="header.jsp"/>
 
-ADD DISH<br>
-<form action="${pageContext.request.contextPath}/Home?action=addDishResult" method="post">
+UPDATE DISH<br>
+<form action="${pageContext.request.contextPath}/Home?action=updateDishResult&id=${dish.id}" method="post">
     Dish name:<br>
     <label>
         <input type="text" name="dishName" minlength="2" maxlength="25" title="Dish name" placeholder="Dish name"
-               value=""
+               value="${dish.name}"
                required>
     </label> <br>
     Size:<br>
     <label>
-        <input type="text" name="size" minlength="2" maxlength="25" title="Dish size" placeholder="Dish size" value=""
+        <input type="text" name="size" minlength="2" maxlength="25" title="Dish size" placeholder="Dish size" value="${dish.size}"
                required>
     </label> <br>
     Price:<br>
     <label>
         <input type="text" name="price" minlength="2" maxlength="25" title="Dish price" placeholder="Dish price"
-               value=""
+               value="${dish.price}"
                required>
     </label> <br>
     Client info:<br>
     <label>
         <input type="text" name="clientInfo" minlength="2" maxlength="25" title="Client info" placeholder="Client info"
-               value="" required>
+               value="${dish.clientInfo}" required>
     </label> <br>
     Staff info:<br>
     <label>
         <input type="text" name="staffInfo" minlength="2" maxlength="25" title="Staff info" placeholder="Staff info"
-               value="" required>
+               value="${dish.staffInfo}" required>
     </label> <br>
-    <div id="parentId">
-        <div>
-                Add ingredient:<br>
-                <label>
-                    <input type="text" name="name" minlength="2" maxlength="25" title="Ingredient name"
-                           placeholder="Ingredient name" value="" required>
-                    <input type="text" name="quantity" minlength="2" maxlength="25" title="Quantity"
-                           placeholder="Quantity"
-                           value="" required>
-                </label>
-                <a style="color:red;" onclick="return deleteField(this)" href="#">[-]</a>
-                <a style="color:green;" onclick="return addField()" href="#">[+]</a>
-        </div>
+    Dish status:<br>
+    <select name="dish_status" id="select_status">
+        <option value="${dish.status}">${dish.status}</option>
+        <option value="AVAILABLESOON">AVAILABLESOON</option>
+        <option value="NEW">NEW</option>
+        <option value="HIT">HIT</option>
+        <option value="DEFAULT">DEFAULT</option>
+        <option value="NOAVAILABLE">NOAVAILABLE</option>
+    </select> <br>
+
+
+<div id="parentId">
+    <c:forEach items="${dish.ingredientList}" var="list">
+    <div>
+        Add ingredient:<br>
+        <label>
+            <input type="text" name="name" minlength="2" maxlength="25" title="${list.name}"
+                   placeholder="${list.name}" value="${list.name}" required>
+            <input type="text" name="quantity" minlength="2" maxlength="25" title="${list.size}"
+                   placeholder="Quantity"
+                   value="${list.size}" required>
+        </label>
+        <a style="color:red;" onclick="return deleteField(this)" href="#">[-]</a>
+        <a style="color:green;" onclick="return addField()" href="#">[+]</a>
+    </div>
+    </c:forEach>
     </div>
     <br><br>
     <input type="submit" value="Submit">

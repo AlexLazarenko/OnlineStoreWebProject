@@ -5,7 +5,7 @@
 <p><img src="${pageContext.request.contextPath}/fronts/avatar.jpg" alt="avatar"
         width="820" height="502" style="vertical-align:middle;margin:0px 50px">
 </p>
-<p><img src="${pageContext.request.contextPath}/Home?action=loadImage" alt="avatar"
+<p><img src="${pageContext.request.contextPath}/images/out.jpg" alt="avatar"
         width="1137" height="571" style="vertical-align:middle;margin:0px 50px">
 </p>
 <br>
@@ -28,7 +28,7 @@
     <br><br>
     <a href="<%=request.getContextPath()%>/Home?action=updateUser">Edit profile</a>
     <br>
-    <a href="<%=request.getContextPath()%>/Home?action=uploadImage">Change avatar</a>
+    <a href="<%=request.getContextPath()%>/Home?action=uploadUserAvatar">Change avatar</a>
     <br>
     <a href="<%=request.getContextPath()%>/Home?action=changePassword">Change password</a>
 </div>

@@ -32,5 +32,7 @@
 </form>
 <br><br>
 <a href="${pageContext.request.contextPath}/Home?action=registration">Go to registration page</a>
+<br><br>
+<a href="${pageContext.request.contextPath}/Home?action=forgotPassword">I forgot password</a>
 
 <jsp:include page="footer.jsp"/>
