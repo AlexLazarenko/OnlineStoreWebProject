@@ -1,20 +1,22 @@
 package edu.epam.web.dao;
 
 import edu.epam.web.entity.Dish;
+import edu.epam.web.exception.DaoException;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface DishDao {
-    void createDish(Dish dish);
+public interface DishDao extends BaseDao{
+    int createDish(Dish dish) throws DaoException;
 
-    Dish findDishById(int idx);
+    Optional<Dish> findDishById(int idx) throws DaoException;
 
-    List<Dish> findDishes();
+    List<Dish> findDishes() throws DaoException;
 
-    int updateDish(Dish newDish);
+    int updateDish(Dish newDish) throws DaoException;
 
-    int updatePicture(int id, byte[] picture);
+    int updatePicture(int id, String picture) throws DaoException;
 
-    void deleteDish(int idx);
+    int deleteDish(int idx) throws DaoException;
 
 }

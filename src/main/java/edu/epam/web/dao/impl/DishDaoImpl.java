@@ -2,245 +2,237 @@ package edu.epam.web.dao.impl;
 
 import edu.epam.web.connection.ConnectionPool;
 import edu.epam.web.dao.DishDao;
-import edu.epam.web.dao.UserDao;
-import edu.epam.web.entity.*;
+import edu.epam.web.entity.Dish;
+import edu.epam.web.entity.DishStatus;
+import edu.epam.web.entity.Ingredient;
+import edu.epam.web.entity.User;
+import edu.epam.web.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
-import static java.lang.String.valueOf;
 
 public class DishDaoImpl implements DishDao {
-    private static final Logger logger = LogManager.getLogger(edu.epam.web.dao.impl.DishDaoImpl.class);
-    private final ConnectionPool pool = ConnectionPool.getInstance();
-    private final List<Dish> dishes = new ArrayList<>();
- /*   Connection connection = ...;
-// Сброс автофиксации
-connection.setAutoCommit(false);
-    // Первая транзакция
-    PreparedStatement updateSales = connection.prepareStatement(
-            "UPDATE COFFEES SET SALES = ? WHERE COF_NAME LIKE ?");
-updateSales.setInt(1, 50);
-updateSales.setString(2, "Colombian");
-updateSales.executeUpdate();
 
-    // Вторая транзакция
-    PreparedStatement updateTotal = connection.prepareStatement(
-            "UPDATE COFFEES SET TOTAL = TOTAL + ? WHERE COF_NAME LIKE ?");
-updateTotal.setInt(1, 50);
-updateTotal.setString(2, "Colombian");
-updateTotal.executeUpdate();
-// Завершение транзакции
-connection.commit();
-// Восстановление по умолчанию
-connection.setAutoCommit(true);*/
+    private static final Logger logger = LogManager.getLogger(edu.epam.web.dao.impl.DishDaoImpl.class);
+
+    private final ConnectionPool pool = ConnectionPool.getInstance();
+
+    private final List<Dish> dishes = new ArrayList<>();
+
+    private static final String CREATE_DISH = "INSERT INTO dish (name, size, price,clientinfo,staffinfo, picture, dishstatus) " +
+            "VALUES (?,?,?,?,?,?,CAST(? AS dish_status));";
+
+    private static final String CREATE_INGREDIENT = "INSERT INTO ingridient (dish_name, ingridient_name, ingridient_quantity) VALUES (?,?,?);";
+
+    private static final String FIND_DISH_BY_ID = "SELECT id, name, size, price,clientinfo,staffinfo, picture, dishstatus," +
+            " ingridient_name, ingridient_quantity FROM dish JOIN ingridient on dish.name = ingridient.dish_name where id=?";
+
+    private static final String FIND_DISHES = "SELECT id, name, size, price,clientinfo,staffinfo, picture, dishstatus," +
+            " ingridient_name, ingridient_quantity FROM dish JOIN ingridient on dish.name = ingridient.dish_name;";
+
+    private static final String UPDATE_DISH = "UPDATE dish SET name=?,size=?,price=?,clientinfo=?,staffinfo=?,picture=?," +
+            "dishstatus=CAST(? AS dish_status) WHERE id=?";
+
+    private static final String UPDATE_INGREDIENT = "UPDATE ingridient SET ingridient_name=?, ingridient_quantity=? where dish_name=? ";
+
+    private static final String UPDATE_PICTURE = "UPDATE dish SET picture=? WHERE id=?";
+
+    private static final String DELETE_DISH = "DELETE FROM dish where id=?";
 
 
     @Override
-    public void createDish(Dish dish) {
-        Connection connection = pool.getConnection();
+
+    public int createDish(Dish dish) throws DaoException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        PreparedStatement preparedStatement = null;
+        int affectedRows = 0;
         try {
+            connection = pool.getConnection();
             connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            logger.error("Transaction fail", e);
-        }
-        String sqlStatement = "INSERT INTO dish (name, size, price,clientinfo,staffinfo, picture, dishstatus) " +
-                "VALUES (?,?,?,?,?,?,CAST(? AS dish_status));";
-        try {
-            PreparedStatement ps = connection.prepareStatement(sqlStatement, PreparedStatement.RETURN_GENERATED_KEYS);
-            {
-                ps.setString(1, dish.getName());
-                ps.setString(2, dish.getSize());
-                ps.setBigDecimal(3, dish.getPrice());
-                ps.setString(4, dish.getClientInfo());
-                ps.setString(5, dish.getStaffInfo());
-                ps.setBytes(6, dish.getDishImage());
-                ps.setString(7, dish.getStatus().name());
-            }
-            ps.executeUpdate();
+            ps = connection.prepareStatement(CREATE_DISH, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setString(1, dish.getName());
+            ps.setString(2, dish.getSize());
+            ps.setBigDecimal(3, dish.getPrice());
+            ps.setString(4, dish.getClientInfo());
+            ps.setString(5, dish.getStaffInfo());
+            ps.setString(6, dish.getDishImage());
+            ps.setString(7, dish.getStatus().name());
+           affectedRows= ps.executeUpdate();
+            if (affectedRows == 0) {
+                logger.error("Update failed. Try again!");
+            } else {
             ResultSet resultSet = ps.getGeneratedKeys();
-            if (resultSet.next()) {//todo
-                int dishId = resultSet.getInt(8);
+            if (resultSet.next()) {
                 List<Ingredient> ingredients = dish.getIngredientList();
-                String statement = "INSERT INTO ingridient (dishid, ingridient_name, ingridient_quantity) " +
-                        "VALUES (?,?,?);";
+                preparedStatement = connection.prepareStatement(CREATE_INGREDIENT);
                 for (Ingredient ingredient : ingredients) {
-                    PreparedStatement preparedStatement = connection.prepareStatement(statement);
-                    {
-                        preparedStatement.setInt(1, dishId);
-                        preparedStatement.setString(2, ingredient.getName());
-                        preparedStatement.setString(3, ingredient.getSize());
-                    }
-                    preparedStatement.executeUpdate();
+                    preparedStatement.setString(1, dish.getName());
+                    preparedStatement.setString(2, ingredient.getName());
+                    preparedStatement.setString(3, ingredient.getSize());
+                    affectedRows=preparedStatement.executeUpdate();
                 }
                 connection.commit();
-                connection.setAutoCommit(true);
-                ps.close();
+            }
+                resultSet.close();
+            }
+            if (affectedRows == 0) {
+                logger.error("Creation failed. Try again!");
+            } else {
+                logger.info("Dish created");
             }
         } catch (SQLException e) {
+            rollback(connection);
             logger.error("Creation failed. Something wrong with database", e);
+            throw new DaoException(e);
         } finally {
-            pool.releaseConnection(connection);
+            close(connection);
+            close(ps);
+            close(preparedStatement);
         }
+        return affectedRows;
     }
 
 
     @Override
-    public Dish findDishById(int idx) {
+    public Optional<Dish> findDishById(int idx) throws DaoException {
+        Optional<Dish> optionalDish = Optional.empty();
         Dish dish = null;
-        Connection connection = pool.getConnection();
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT id, name, size, price,clientinfo,staffinfo," +
-                    " picture, dishstatus, ingridient_name, ingridient_quantity FROM dish" +
-                    "  JOIN ingridient on dish.id = ingridient.dishid where id=?");
+        try (Connection connection = pool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(FIND_DISH_BY_ID);
+        ) {
             ps.setInt(1, idx);
             ResultSet rs = ps.executeQuery();
             rs.next();
             dish = convertResultSet(rs);
+            optionalDish=Optional.of(dish);
             rs.close();
-            ps.close();
         } catch (SQLException e) {
             logger.error("Failed. Something wrong with database", e);
-        } finally {
-            pool.releaseConnection(connection);
+            throw new DaoException(e);
         }
-        return dish;
+        return optionalDish;
     }
 
 
     @Override
-    public List<Dish> findDishes() {
+    public List<Dish> findDishes() throws DaoException {
         Dish dish = null;
-        Connection connection = pool.getConnection();
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT id, name, size, price,clientinfo,staffinfo," +
-                    " picture, dishstatus, ingridient_name, ingridient_quantity FROM dish  JOIN ingridient" +
-                    " on dish.id = ingridient.dishid;");
+        try (Connection connection = pool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(FIND_DISHES);
+        ) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 dish = convertResultSet(rs);
                 dishes.add(dish);
             }
             rs.close();
-            ps.close();
         } catch (SQLException e) {
             logger.error("Failed. Something wrong with database", e);
-        } finally {
-            pool.releaseConnection(connection);
+            throw new DaoException(e);
         }
         return dishes;
     }
 
     @Override
- /* UPDATE vehicles_vehicle AS v
-    SET price = s.price_per_vehicle
-    FROM shipments_shipment AS s
-    WHERE v.shipment_id = s.id   */
-    public int updateDish(Dish newDish) { //todo transanction
-        Connection connection = pool.getConnection();
-        try {
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            logger.error("Transaction fail", e);
-        }
+    public int updateDish(Dish newDish) throws DaoException { //todo transanction
+        Connection connection = null;
+        PreparedStatement ps = null;
+        PreparedStatement preparedStatement = null;
+        int affectedRows = 0;
         int id = newDish.getId();
-        String sqlStatement = "UPDATE dish SET name=?,size=?,price=?," +
-                "clientinfo=?,staffinfo=?,picture=?,dishstatus=? WHERE id=?";
+        String name = newDish.getName();
         try {
-            PreparedStatement ps = connection.prepareStatement(sqlStatement);
-            {
-                ps.setString(1, newDish.getName());
-                ps.setString(2, newDish.getSize());
-                ps.setBigDecimal(3, newDish.getPrice());
-                ps.setString(4, newDish.getClientInfo());
-                ps.setString(5, newDish.getStaffInfo());
-                ps.setBytes(6, newDish.getDishImage());
-                ps.setString(7, newDish.getStatus().name());
-                ps.setInt(8, id);
-            }
-            int affectedRows = ps.executeUpdate();
+            connection = pool.getConnection();
+            connection.setAutoCommit(false);
+            ps = connection.prepareStatement(UPDATE_DISH);
+            ps.setString(1, newDish.getName());
+            ps.setString(2, newDish.getSize());
+            ps.setBigDecimal(3, newDish.getPrice());
+            ps.setString(4, newDish.getClientInfo());
+            ps.setString(5, newDish.getStaffInfo());
+            ps.setString(6, newDish.getDishImage());
+            ps.setString(7, newDish.getStatus().name());
+            ps.setInt(8, id);
+            affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
                 logger.error("Update failed. Try again!");
             } else {
                 List<Ingredient> ingredients = newDish.getIngredientList();
-                String statement = "UPDATE ingridient SET ingridient_name=?, ingridient_quantity=? where dishid=? ";
+                preparedStatement = connection.prepareStatement(UPDATE_INGREDIENT);
                 for (Ingredient ingredient : ingredients) {
-                    PreparedStatement preparedStatement = connection.prepareStatement(statement);
-                    {
-                        preparedStatement.setString(1, ingredient.getName());
-                        preparedStatement.setString(2, ingredient.getSize());
-                        preparedStatement.setInt(3, id);
-                    }
+                    preparedStatement.setString(1, ingredient.getName());
+                    preparedStatement.setString(2, ingredient.getSize());
+                    preparedStatement.setString(3, name);
                     affectedRows = preparedStatement.executeUpdate();
                 }
                 connection.commit();
-                connection.setAutoCommit(true);
             }
             if (affectedRows == 0) {
                 logger.error("Update failed. Try again!");
             } else {
                 logger.info("Dish updated");
             }
-            ps.close();
-            return affectedRows;
         } catch (SQLException e) {
+            rollback(connection);
             logger.error("Update failed. Something wrong with database", e);
+            throw new DaoException(e);
         } finally {
-            pool.releaseConnection(connection);
+            close(connection);
+            close(ps);
+            close(preparedStatement);
         }
-        return 0;
+        return affectedRows;
     }
 
     @Override
-    public int updatePicture(int id, byte[] picture) {
-        String sqlStatement = "UPDATE dish SET picture=? WHERE id=?";
-        Connection connection = pool.getConnection();
-        try {
-            PreparedStatement ps = connection.prepareStatement(sqlStatement);
+    public int updatePicture(int id, String picture) throws DaoException {
+        int affectedRows = 0;
+        try (Connection connection = pool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(UPDATE_PICTURE);
+        ) {
             {
-                ps.setBytes(1, picture);
+                ps.setString(1, picture);
                 ps.setInt(2, id);
             }
-            int affectedRows = ps.executeUpdate();
+            affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
                 logger.error("Picture update failed. Try again!");
             } else {
                 logger.info("Picture updated");
             }
-            ps.close();
-            return affectedRows;
         } catch (SQLException e) {
             logger.error("Picture update failed. Something wrong with database", e);
-        } finally {
-            pool.releaseConnection(connection);
+            throw new DaoException(e);
         }
-        return 0;
+        return affectedRows;
     }
 
     @Override
-    public void deleteDish(int idx) {
-        Connection connection = pool.getConnection();
-        try {
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM dish where id=?");
+    public int deleteDish(int idx) throws DaoException {
+        int affectedRows = 0;
+        try (
+                Connection connection = pool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(DELETE_DISH);
+        ) {
             ps.setInt(1, idx);
-            int affectedRows = ps.executeUpdate();
+            affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
                 logger.info("Dish with this id not exist");
             } else {
                 logger.info("Dish deleted");
             }
-            ps.close();
         } catch (SQLException e) {
             logger.error("Failed. Something wrong with database", e);
-        } finally {
-            pool.releaseConnection(connection);
+            throw new DaoException(e);
         }
+        return affectedRows;
     }
 
 
@@ -252,14 +244,15 @@ connection.setAutoCommit(true);*/
         BigDecimal price = resultSet.getBigDecimal("price");
         String clientInfo = resultSet.getString("clientinfo");
         String staffInfo = resultSet.getString("staffinfo");
-        byte[] picture = resultSet.getBytes("picture");
+        String picture = resultSet.getString("picture");
         DishStatus status = DishStatus.valueOf(resultSet.getString("dishstatus"));
         List<String> names = new ArrayList<>();
         List<String> quantity = new ArrayList<>();
         do {
             names.add(resultSet.getString("ingridient_name"));
             quantity.add(resultSet.getString("ingridient_quantity"));
-        } while (resultSet.next());
+        }
+        while (resultSet.next() && resultSet.getInt("id") == id);
         List<Ingredient> ingredients = new ArrayList<>();
         for (int i = 0; i < names.size(); i++) {
             if (names.get(i) != null && quantity.get(i) != null) {
@@ -270,6 +263,7 @@ connection.setAutoCommit(true);*/
         dish = new Dish(id, name, size, price, clientInfo, staffInfo, picture, status, ingredients);
         return dish;
     }
+
 }
 
 

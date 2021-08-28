@@ -1,9 +1,10 @@
 package edu.epam.web.command.impl;
 
 import edu.epam.web.command.Command;
-import edu.epam.web.dao.UserDao;
-import edu.epam.web.dao.impl.UserDaoImpl;
+import edu.epam.web.command.PagePath;
+import edu.epam.web.command.RequestAttribute;
 import edu.epam.web.entity.User;
+import edu.epam.web.exception.ServiceException;
 import edu.epam.web.service.UserDaoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,13 +24,14 @@ public class ShowAllUsersCommand extends Command {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UserDaoService service = new UserDaoService();
         List<User> allUsers = new ArrayList<>();
-        RequestDispatcher usersPage = request.getRequestDispatcher("/jsp/usersAdmin.jsp");
-        allUsers = service.findUsers();
-        request.setAttribute("allUsers", allUsers);
+        RequestDispatcher usersPage = request.getRequestDispatcher(PagePath.VIEW_ALL_USERS_PAGE);
+        try{
+            allUsers = service.findUsers();
+        }catch (ServiceException e){
+            logger.error(e);
+            request.setAttribute(RequestAttribute.EXCEPTION, e.getMessage());
+        }
+        request.setAttribute(RequestAttribute.ALL_USERS, allUsers);
         usersPage.forward(request, response);
     }
 }
-//<c:if test = "${sessionScope.user.role == 'admin'}">
-//<td><a href="<%=request.getContextPath()%>/Home?action=updateUser&id=<c:out value="${entry.id}"/>">Edit</a></td>
-//<td><a href="<%=request.getContextPath()%>/Home?action=deleteUser&id=<c:out value="${entry.id}"/>">Remove</a></td>
-//</c:if>

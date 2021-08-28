@@ -1,6 +1,8 @@
 package edu.epam.web.command.impl;
 
 import edu.epam.web.command.Command;
+import edu.epam.web.command.PagePath;
+import edu.epam.web.command.RequestAttribute;
 import edu.epam.web.exception.ValidatorException;
 
 import javax.servlet.RequestDispatcher;
@@ -16,9 +18,9 @@ public class AddDishCommand extends Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException, ValidatorException {
-        RequestDispatcher addDish = request.getRequestDispatcher("/jsp/addDish.jsp");
+        RequestDispatcher addDish = request.getRequestDispatcher(PagePath.ADD_DISH_PAGE);
         Map<String, String> messages = new HashMap<String, String>();
-        request.setAttribute("messages", messages);
+        request.setAttribute(RequestAttribute.MESSAGES, messages);
         addDish.forward(request, response);
     }
 }

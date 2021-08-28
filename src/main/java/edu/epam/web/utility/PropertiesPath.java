@@ -10,6 +10,10 @@ public class PropertiesPath {
      * The constant MAIL_PROPERTIES.
      */
     public static final String MAIL_PROPERTIES = "property/mail.properties";
+    /**
+     * The constant PATH_PROPERTIES.
+     */
+    public static final String PATH_PROPERTIES = "property/path.properties";
 
     private PropertiesPath() {
     }

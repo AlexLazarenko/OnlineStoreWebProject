@@ -14,10 +14,10 @@ public class Dish {
     private BigDecimal price;
     private String clientInfo;
     private String staffInfo;
-    private byte[] dishImage;
+    private String dishImage;
 
     public Dish( int id, String name, String size, BigDecimal price, String clientInfo,
-                String staffInfo, byte[] dishImage, DishStatus status, List<Ingredient> ingredientList ) {
+                String staffInfo, String dishImage, DishStatus status, List<Ingredient> ingredientList ) {
         this.ingredientList = ingredientList;
         this.status = status;
         this.id = id;
@@ -93,11 +93,11 @@ public class Dish {
         this.staffInfo = staffInfo;
     }
 
-    public byte[] getDishImage() {
+    public String getDishImage() {
         return dishImage;
     }
 
-    public void setDishImage(byte[] dishImage) {
+    public void setDishImage(String dishImage) {
         this.dishImage = dishImage;
     }
 
@@ -116,28 +116,35 @@ public class Dish {
         if (!price.equals(dish.price)) return false;
         if (!clientInfo.equals(dish.clientInfo)) return false;
         if (!staffInfo.equals(dish.staffInfo)) return false;
-        return Arrays.equals(dishImage, dish.dishImage);
+        return dishImage != null ? dishImage.equals(dish.dishImage) : dish.dishImage == null;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(ingredientList, status, id, name, size, price, clientInfo, staffInfo);
-        result = 31 * result + Arrays.hashCode(dishImage);
+        int result = ingredientList.hashCode();
+        result = 31 * result + status.hashCode();
+        result = 31 * result + id;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + size.hashCode();
+        result = 31 * result + price.hashCode();
+        result = 31 * result + clientInfo.hashCode();
+        result = 31 * result + staffInfo.hashCode();
+        result = 31 * result + (dishImage != null ? dishImage.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Dish{" +
-                "ingridientList=" + ingredientList +
+                "ingredientList=" + ingredientList +
                 ", status=" + status +
-                ", id='" + id + '\'' +
+                ", id=" + id +
                 ", name='" + name + '\'' +
-                ", size=" + size +
+                ", size='" + size + '\'' +
                 ", price=" + price +
                 ", clientInfo='" + clientInfo + '\'' +
                 ", staffInfo='" + staffInfo + '\'' +
-                ", dishImage=" + Arrays.toString(dishImage) +
+                ", dishImage='" + dishImage + '\'' +
                 '}';
     }
 }

@@ -1,6 +1,5 @@
 package edu.epam.web.connection;
 
-import edu.epam.web.utility.MailSenderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,13 +13,17 @@ import java.util.Properties;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static edu.epam.web.utility.PropertiesPath.DB_PROPERTIES;
-import static edu.epam.web.utility.PropertiesPath.MAIL_PROPERTIES;
 
 public class ConnectionPool {
     private static final Logger logger = LogManager.getLogger(ConnectionPool.class);
     private static volatile ConnectionPool instance;
+    private static final Lock lock = new ReentrantLock();
+    private static final AtomicBoolean isInitialized = new AtomicBoolean(false);
     private final BlockingQueue<ProxyConnection> freeConnections;
     private final Queue<ProxyConnection> givenAwayConnections;
     private final static int POOL_SIZE = 32;
@@ -46,17 +49,16 @@ public class ConnectionPool {
         }
     }
 
-    public static ConnectionPool getInstance() { //todo
-        ConnectionPool localInstance = instance;
-        if (localInstance == null) {
-            synchronized (ConnectionPool.class) {
-                localInstance = instance;
-                if (localInstance == null) {
-                    instance = localInstance = new ConnectionPool();
-                }
+    public static ConnectionPool getInstance() {
+        if (!isInitialized.get()) {
+            lock.lock();
+            if (instance == null) {
+                instance = new ConnectionPool();
+                isInitialized.set(true);
             }
+            lock.unlock();
         }
-        return localInstance;
+        return instance;
     }
 
     private ConnectionPool() {

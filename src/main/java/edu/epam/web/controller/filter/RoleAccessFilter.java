@@ -1,12 +1,19 @@
 package edu.epam.web.controller.filter;
 
+import edu.epam.web.command.CommandFactory;
+import edu.epam.web.command.PagePath;
+import edu.epam.web.command.RequestParameter;
+import edu.epam.web.command.SessionAttribute;
 import edu.epam.web.entity.User;
+import edu.epam.web.entity.UserRole;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Set;
 
 public class RoleAccessFilter implements Filter {
     @Override
@@ -16,28 +23,43 @@ public class RoleAccessFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-     /*   HttpServletRequest request = (HttpServletRequest) servletRequest;
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
+
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpSession session = request.getSession(false);
 
-        String homeURI = request.getContextPath() + "/Home";
+        String commandName = request.getParameter(RequestParameter.ACTION);
 
-        User user = (User) session.getAttribute("user");
-        boolean loggedIn =  session.getAttribute("user") != null && user != null
-                && request.getParameter("action") != null;
-        if (loggedIn  && user.getRole().name().equals("CLIENT") //todo
-                && (request.getParameter("action").equals("delete")
-                || request.getParameter("action").equals("edit")
-                || request.getParameter("action").equals("editResult")
-                || request.getParameter("action").equals("showUsers")
-                || request.getParameter("action").equals("upUser")
-                || request.getParameter("action").equals("deleteUser"))) {
-            response.sendRedirect(homeURI);
-        } else {
+        if (commandName == null) {
+            request.getRequestDispatcher(PagePath.ERROR_404).forward(servletRequest, servletResponse);
+            return;
+        }
 
+        UserRole role = UserRole.GUEST;
+        Set<String> commandsByRole;
+
+        User user = (User) session.getAttribute(SessionAttribute.USER);
+        if (user != null) {
+            role = user.getRole();
+        }
+        switch (role) {
+            case CLIENT -> {
+                commandsByRole = RoleAccessPermission.CLIENT.getCommands();
+            }
+            case STAFF -> {
+                commandsByRole = RoleAccessPermission.STAFF.getCommands();
+            }
+            case ADMIN -> {
+                commandsByRole = RoleAccessPermission.ADMIN.getCommands();
+            }
+            default -> {
+                commandsByRole = RoleAccessPermission.GUEST.getCommands();
+            }
+        }
+        if (!commandsByRole.contains(commandName.toUpperCase())) {
+            request.getRequestDispatcher(PagePath.ERROR_404).forward(servletRequest, servletResponse);
+        } else
             // pass the request along the filter chain
-            filterChain.doFilter(request, response);
-        }*/
+            filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override

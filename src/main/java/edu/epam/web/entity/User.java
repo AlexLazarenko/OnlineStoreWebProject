@@ -1,5 +1,6 @@
 package edu.epam.web.entity;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
@@ -12,15 +13,15 @@ public class User  {
     private Date birthday;
     private UserGender gender;
     private String email;
-    private int statusPoint;
+    private BigDecimal statusPoint;
     private UserRole role;
-    private byte[] avatar;
+    private String avatar;
     private UserStatus userStatus;
     private AccountStatus accountStatus;
 
     public User(int id, String telephoneNumber, String surname,
-                String name, Date birthday, UserGender gender, String email, int statusPoint,
-                UserRole role, byte[] avatar, UserStatus userStatus, AccountStatus accountStatus) {
+                String name, Date birthday, UserGender gender, String email, BigDecimal statusPoint,
+                UserRole role, String avatar, UserStatus userStatus, AccountStatus accountStatus) {
         this.id = id;
         this.telephoneNumber = telephoneNumber;
         this.surname = surname;
@@ -91,11 +92,11 @@ public class User  {
         this.email = email;
     }
 
-    public int getStatusPoint() {
+    public BigDecimal getStatusPoint() {
         return statusPoint;
     }
 
-    public void setStatusPoint(int statusPoint) {
+    public void setStatusPoint(BigDecimal statusPoint) {
         this.statusPoint = statusPoint;
     }
 
@@ -107,11 +108,11 @@ public class User  {
         this.role = role;
     }
 
-    public byte[] getAvatar() {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(byte[] avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 
@@ -139,7 +140,7 @@ public class User  {
         User user = (User) o;
 
         if (id != user.id) return false;
-        if (statusPoint != user.statusPoint) return false;
+        if (!statusPoint.equals(user.statusPoint)) return false;
         if (!telephoneNumber.equals(user.telephoneNumber)) return false;
         if (!surname.equals(user.surname)) return false;
         if (!name.equals(user.name)) return false;
@@ -147,7 +148,7 @@ public class User  {
         if (gender != user.gender) return false;
         if (!email.equals(user.email)) return false;
         if (role != user.role) return false;
-        if (!Arrays.equals(avatar, user.avatar)) return false;
+        if (avatar != null ? !avatar.equals(user.avatar) : user.avatar != null) return false;
         if (userStatus != user.userStatus) return false;
         return accountStatus == user.accountStatus;
     }
@@ -161,9 +162,9 @@ public class User  {
         result = 31 * result + birthday.hashCode();
         result = 31 * result + gender.hashCode();
         result = 31 * result + email.hashCode();
-        result = 31 * result + statusPoint;
+        result = 31 * result + statusPoint.hashCode();
         result = 31 * result + role.hashCode();
-        result = 31 * result + Arrays.hashCode(avatar);
+        result = 31 * result + (avatar != null ? avatar.hashCode() : 0);
         result = 31 * result + userStatus.hashCode();
         result = 31 * result + accountStatus.hashCode();
         return result;
@@ -181,7 +182,7 @@ public class User  {
                 ", email='" + email + '\'' +
                 ", statusPoint=" + statusPoint +
                 ", role=" + role +
-                ", avatar=" + Arrays.toString(avatar) +
+                ", avatar='" + avatar + '\'' +
                 ", userStatus=" + userStatus +
                 ", accountStatus=" + accountStatus +
                 '}';

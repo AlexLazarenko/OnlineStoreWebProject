@@ -1,9 +1,9 @@
 package edu.epam.web.command.impl;
 
 import edu.epam.web.command.Command;
+import edu.epam.web.command.PagePath;
+import edu.epam.web.command.RequestAttribute;
 import edu.epam.web.exception.ValidatorException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,12 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChangePasswordCommand extends Command {
-    private static final Logger logger = LogManager.getLogger(ChangePasswordCommand.class);
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException, ValidatorException {
-        RequestDispatcher reg = request.getRequestDispatcher("/jsp/password.jsp");
+        RequestDispatcher reg = request.getRequestDispatcher(PagePath.CHANGE_PASSWORD_PAGE);
         Map<String, String> messages = new HashMap<String, String>();
-        request.setAttribute("messages", messages);
+        request.setAttribute(RequestAttribute.MESSAGES, messages);
         reg.forward(request, response);
     }
 }

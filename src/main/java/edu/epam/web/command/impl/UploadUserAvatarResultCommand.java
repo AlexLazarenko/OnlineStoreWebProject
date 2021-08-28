@@ -1,55 +1,70 @@
 package edu.epam.web.command.impl;
 
 import edu.epam.web.command.Command;
+import edu.epam.web.command.PagePath;
+import edu.epam.web.command.RequestAttribute;
+import edu.epam.web.command.SessionAttribute;
 import edu.epam.web.entity.User;
+import edu.epam.web.exception.ServiceException;
 import edu.epam.web.exception.ValidatorException;
 import edu.epam.web.service.UserDaoService;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.IOUtils;
+import edu.epam.web.utility.FileUtil;
+import edu.epam.web.utility.PropertyReaderUtil;
+import edu.epam.web.validator.FileValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.io.IOException;
 
-import java.io.InputStream;
 import java.text.ParseException;
-import java.util.List;
-@MultipartConfig(location="C:/tmp", fileSizeThreshold=1024*1024,
-        maxFileSize=1024*1024*5, maxRequestSize=1024*1024*5*5)
+
 public class UploadUserAvatarResultCommand extends Command {
+    private static final String PATH = PropertyReaderUtil.getPath();
     private static final Logger logger = LogManager.getLogger(UploadUserAvatarResultCommand.class);
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException, ValidatorException {
-        response.setContentType("text/html");
+        User user = (User) request.getSession().getAttribute(SessionAttribute.USER);
         UserDaoService service = new UserDaoService();
-        byte[]avatar=uploadImage(request,response);
-        User user=(User)request.getSession().getAttribute("user");
-        service.updateAvatar(user.getId(),avatar);
-        RequestDispatcher add = request.getRequestDispatcher("/jsp/uploadUserAvatar.jsp");
+        boolean isCorrect = false;
+        String oldUserImage = user.getAvatar();
+
+        try {
+            for (Part part : request.getParts()) {
+                if (FileValidator.isValidFile(part)) {
+                    String fileName = part.getSubmittedFileName();
+                    String newFileName = FileUtil.generateName(fileName);
+                    part.write(PATH + newFileName);
+                    user.setAvatar(newFileName);
+                    isCorrect = true;
+                }
+            }
+        } catch (IOException | ServletException e) {
+            logger.error("some error save file" + e);
+        }
+
+        if (isCorrect) {
+            try {
+                service.updateAvatar(user.getId(), user.getAvatar());
+                request.getSession().setAttribute(SessionAttribute.USER, user);
+            } catch (ServiceException e) {
+                logger.error(e);
+                request.setAttribute(RequestAttribute.EXCEPTION, e.getMessage());
+            }
+            if (oldUserImage != null) {
+                FileUtil.deleteImage(PATH + oldUserImage);
+            }
+        } else logger.error("some error save file, try again");
+
+        RequestDispatcher add = request.getRequestDispatcher(PagePath.UPLOAD_USER_IMAGE_PAGE);
         add.forward(request, response);
     }
-
-    private byte[] uploadImage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        try {
-            DiskFileItemFactory fileFactory = new DiskFileItemFactory();
-            ServletFileUpload servletFileUpload = new ServletFileUpload(fileFactory);
-            List<FileItem> items = servletFileUpload.parseRequest(request);
-            for (FileItem item : items) {
-                InputStream fileContent = item.getInputStream();
-                byte[] array = IOUtils.toByteArray(fileContent);
-                return array;
-            }
-        } catch (FileUploadException e) {
-            throw new ServletException("Cannot parse multipart request.", e);
-        }
-        return null;
-    }
 }
+
+
+

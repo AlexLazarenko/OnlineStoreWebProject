@@ -1,15 +1,10 @@
 package edu.epam.web.command.impl;
 
 import edu.epam.web.command.Command;
-import edu.epam.web.dao.UserDao;
-import edu.epam.web.dao.impl.UserDaoImpl;
-import edu.epam.web.entity.Order;
-import edu.epam.web.entity.User;
+import edu.epam.web.command.PagePath;
+import edu.epam.web.command.RequestAttribute;
+import edu.epam.web.exception.EmailException;
 import edu.epam.web.exception.ValidatorException;
-import edu.epam.web.service.UserDaoService;
-import edu.epam.web.utility.EncryptPasswordUtil;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -21,35 +16,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginCommand extends Command {
-    private static final Logger logger = LogManager.getLogger(LoginCommand.class);
-
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException, ValidatorException {
-        UserDaoService service = new UserDaoService();
-        String telephoneNumber = request.getParameter("telephone");
-        String password = request.getParameter("password");
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException, ValidatorException, EmailException {
+        RequestDispatcher login = request.getRequestDispatcher(PagePath.LOGIN_PAGE);
         Map<String, String> messages = new HashMap<String, String>();
-
-        if (telephoneNumber != null && !telephoneNumber.isEmpty() && password != null && !password.isEmpty()) { //todo сделать отдельную команду для отрисовки формы?
-            String storedPassword = EncryptPasswordUtil.encrypt(password);
-            System.out.println(storedPassword);
-            User user = service.findByTelephoneNumberPassword(telephoneNumber, storedPassword);
-            String storedTelephoneNumber = service.findUserTelephoneNumber(telephoneNumber);
-            if (storedTelephoneNumber == null) {
-                messages.put("telephone", "Unknown telephone number, please try again");
-            } else if ( user == null) {
-                messages.put("password", "Wrong password, please try again");
-            }
-            if (user != null) {
-                request.getSession().setAttribute("user", user);
-                request.getSession().setAttribute("order", new Order());
-                response.sendRedirect(request.getContextPath() + "/Home");
-                return;
-            }
-        }
-        request.setAttribute("messages", messages);
-        RequestDispatcher login = request.getRequestDispatcher("/jsp/login.jsp");
+        request.setAttribute(RequestAttribute.MESSAGES, messages);
         login.forward(request, response);
     }
 }
-

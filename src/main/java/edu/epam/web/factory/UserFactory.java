@@ -6,6 +6,7 @@ import edu.epam.web.validator.UserValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class UserFactory {
@@ -14,18 +15,18 @@ public class UserFactory {
 
     public User createNewUser(int id, String telephoneNumber, String surname,
                            String name, Date birthday, UserGender gender, String email,
-                            byte[] avatar) throws ValidatorException {
+                            String avatar) throws ValidatorException {
         User user = null;
         if (validator.isUser( telephoneNumber, surname, name, birthday, email)) {
             user = new User(id, telephoneNumber, surname, name, birthday, gender, email,
-                    0, UserRole.CLIENT, avatar, UserStatus.SILVER,  AccountStatus.NEW);
+                    BigDecimal.valueOf(0), UserRole.CLIENT, avatar, UserStatus.SILVER,  AccountStatus.NEW);
         }
         logger.info("User created " + user);
         return user;
     }
     public User createUser(int id, String telephoneNumber, String surname,
                               String name, Date birthday, UserGender gender, String email,
-                              byte[] avatar,int statusPoint, UserRole userRole,UserStatus userStatus,
+                              String avatar,BigDecimal statusPoint, UserRole userRole,UserStatus userStatus,
                            AccountStatus accountStatus) throws ValidatorException {
         User user = null;
         if (validator.isUser( telephoneNumber, surname, name, birthday, email)) {

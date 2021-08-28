@@ -7,15 +7,19 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Order {
-    private String id;
+    private int id;
+    private int userId;
     private BigDecimal price;
+    private BigDecimal discount;
     private Date date;
     private OrderStatus status;
     private Map<Dish,Integer> dishMap;
 
-    public Order(String id, BigDecimal price, Date date, OrderStatus status, Map<Dish,Integer> dishMap) {
+    public Order(int id,int userId, BigDecimal price, BigDecimal discount, Date date, OrderStatus status, Map<Dish,Integer> dishMap) {
         this.id = id;
+        this.userId=userId;
         this.price = price;
+        this.discount=discount;
         this.date = date;
         this.status = status;
         this.dishMap = dishMap;
@@ -25,12 +29,20 @@ public class Order {
 
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public BigDecimal getPrice() {
@@ -39,6 +51,14 @@ public class Order {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
     }
 
     public Date getDate() {
@@ -72,8 +92,10 @@ public class Order {
 
         Order order = (Order) o;
 
-        if (!id.equals(order.id)) return false;
+        if (id != order.id) return false;
+        if (userId != order.userId) return false;
         if (!price.equals(order.price)) return false;
+        if (!discount.equals(order.discount)) return false;
         if (!date.equals(order.date)) return false;
         if (status != order.status) return false;
         return dishMap.equals(order.dishMap);
@@ -81,8 +103,10 @@ public class Order {
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
+        int result = id;
+        result = 31 * result + userId;
         result = 31 * result + price.hashCode();
+        result = 31 * result + discount.hashCode();
         result = 31 * result + date.hashCode();
         result = 31 * result + status.hashCode();
         result = 31 * result + dishMap.hashCode();
@@ -92,8 +116,10 @@ public class Order {
     @Override
     public String toString() {
         return "Order{" +
-                "id='" + id + '\'' +
+                "id=" + id +
+                ", userId=" + userId +
                 ", price=" + price +
+                ", discount=" + discount +
                 ", date=" + date +
                 ", status=" + status +
                 ", dishMap=" + dishMap +
