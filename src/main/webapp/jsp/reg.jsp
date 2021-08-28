@@ -1,4 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${language}"/>
+<fmt:setBundle basename="property.language"/>
 <%--
   Created by IntelliJ IDEA.
   User: User
@@ -13,67 +16,68 @@
     input:required:valid {
         border: 2px solid green;}
 </style>
+<fmt:message key="header.registration.page"/>
 <br><br>
 <form action="${pageContext.request.contextPath}/Home?action=registrationResult" method="post">
 
-    Telephone number:<br>
+    <fmt:message key="header.telephone.number"/><br>
     <label>
-        <input type="text" name="telephone" pattern="\d{12}" placeholder="Telephone number"
-               title="Telephone number with full code" value="" required>
+        <input type="text" name="telephone" pattern="\d{12}" placeholder="<fmt:message key="placeholder.telephone.number"/>"
+               title="<fmt:message key="title.telephone.number"/>" value="" required>
     </label>
     <jsp:useBean id="messages" scope="request" type="java.util.HashMap"/>
     <c:out value="${messages['telephone']}"/>
     <br>
 
-    Password:<br>
+    <fmt:message key="header.password"/><br>
     <label>
         <input type="password" name="password"  pattern="^\S{8,25}$"
-               onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Must have at least 8 characters' : '');
-           if(this.checkValidity()) form.password_two.pattern = this.value;" title="Enter your password"
-               placeholder="Password" required>    </label>
+               onchange="this.setCustomValidity(this.validity.patternMismatch ? '<fmt:message key="validity.message.password"/>' : '');
+           if(this.checkValidity()) form.password_two.pattern = this.value;" title="<fmt:message key="title.password"/>"
+               placeholder="<fmt:message key="placeholder.password"/>" required>    </label>
     <c:out value="${messages['password']}"/>
     <br>
-    Confirm password:<br>
+    <fmt:message key="header.confirm.password"/><br>
     <input type="password" name="password_two" pattern="^\S{8,25}$"
-           onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Please enter the same Password as above':'');"
-           title="Confirm your password" placeholder="Confirm Password" required>
+           onchange="this.setCustomValidity(this.validity.patternMismatch ? '<fmt:message key="validity.message.confirm.password"/>':'');"
+           title="<fmt:message key="title.confirm.password"/>" placeholder="<fmt:message key="placeholder.confirm.password"/>" required>
     <br>
 
-    Surname:<br>
+    <fmt:message key="header.surname"/><br>
     <label>
-        <input type="text" name="surname" minlength="2" maxlength="25" title="Your surname"
-               placeholder="Surname" value="" required>
+        <input type="text" name="surname" minlength="2" maxlength="25" title="<fmt:message key="title.surname"/>"
+               placeholder="<fmt:message key="placeholder.surname"/>" value="" required>
     </label>
     <br>
 
-    Name:<br>
+    <fmt:message key="header.name"/><br>
     <label>
-        <input type="text" name="name" minlength="2" maxlength="25" title="Your name" placeholder="Name" value="" required>
+        <input type="text" name="name" minlength="2" maxlength="25" title="<fmt:message key="title.name"/>" placeholder="<fmt:message key="placeholder.name"/>" value="" required>
     </label>
     <br>
 
-    Birthday:<br>
+    <fmt:message key="header.birthday"/><br>
     <label>
-        <input type="date" name="birthday" min="1920-01-01" max="2020-01-01" value="" required>
+        <input type="date" name="birthday" min="1920-01-01" max="2021-01-01" value="" required>
     </label>
     <br>
 
-    Gender:<br>
+    <fmt:message key="header.gender"/><br>
     <label>
-        <label><input type="radio" name="gender" value="NONE" checked> None</label><br>
-        <label><input type="radio" name="gender" value="MALE"> Male</label><br>
-        <label><input type="radio" name="gender" value="FEMALE"> Female</label>
+        <label><input type="radio" name="gender" value="NONE" checked> <fmt:message key="gender.value.none"/></label><br>
+        <label><input type="radio" name="gender" value="MALE"> <fmt:message key="gender.value.male"/></label><br>
+        <label><input type="radio" name="gender" value="FEMALE"> <fmt:message key="gender.value.female"/></label>
     </label>
     <br>
 
-    Email:<br>
+    <fmt:message key="header.email"/><br>
     <label>
         <input type="email" name="email" pattern="^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,7}"
-               title="Enter valid email like xxx@xxx.com" placeholder="Email" value="" required>
+               title="<fmt:message key="title.email"/>" placeholder="<fmt:message key="placeholder.email"/>" value="" required>
     </label>
     <c:out value="${messages['email']}"/>
     <br><br>
-    <input type="submit" value="Submit">
+    <input type="submit" value="<fmt:message key="submit.button"/>">
     <br>
     <c:out value="${messages['message']}"/>
 

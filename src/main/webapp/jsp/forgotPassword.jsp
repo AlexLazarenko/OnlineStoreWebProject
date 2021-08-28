@@ -6,6 +6,9 @@
   Time: 13:01
   To change this template use File | Settings | File Templates.
 --%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${language}"/>
+<fmt:setBundle basename="property.language"/>
 <jsp:include page="header.jsp"/>
 <style>
     input:required:invalid {
@@ -13,19 +16,21 @@
     input:required:valid {
         border: 2px solid green;}
 </style>
+<fmt:message key="header.forgot.password.page"/><br>
+
 <br><br>
 <form action="${pageContext.request.contextPath}/Home?action=forgotPasswordResult" method="post">
 
-    Email:<br>
+    <fmt:message key="header.email"/><br>
     <label>
         <input type="email" name="email" pattern="^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,7}"
-               title="Enter valid email like xxx@xxx.com" placeholder="Email" value="" required>
+               title="<fmt:message key="title.email"/>" placeholder="<fmt:message key="placeholder.email"/>" value="" required>
     </label>
     <c:out value="${messages['email']}"/>
     <br>
-    If you push submit button generated password will be sent to your email address
+    <fmt:message key="forgot.password.message"/>
     <br>
-    <input type="submit" value="Submit">
+    <input type="submit" value="<fmt:message key="submit.button"/>">
     <br>
     <c:out value="${messages['message']}"/>
 

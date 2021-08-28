@@ -5,9 +5,12 @@
   Time: 22:59
   To change this template use File | Settings | File Templates.
 --%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${language}"/>
+<fmt:setBundle basename="property.language"/>
 <jsp:include page="header.jsp"/>
 
-ADD DISH<br>
+<fmt:message key="header.add.dish.page"/><br>
 <form action="${pageContext.request.contextPath}/Home?action=addDishResult" method="post">
     Dish name:<br>
     <label>
@@ -51,7 +54,8 @@ ADD DISH<br>
         </div>
     </div>
     <br><br>
-    <input type="submit" value="Submit">
+    <input type="submit" value="<fmt:message key="submit.button"/>">
+    <c:out value="${messages['message']}"/>
 </form>
 
 <script>
