@@ -1,3 +1,4 @@
+<jsp:useBean id="dish" scope="request" type="edu.epam.web.entity.Dish"/>
 <%--
   Created by IntelliJ IDEA.
   User: AlexLazarenko
@@ -6,52 +7,56 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <fmt:setLocale value="${language}"/>
 <fmt:setBundle basename="property.language"/>
 <jsp:include page="header.jsp"/>
 
 <fmt:message key="header.add.dish.page"/><br>
+<br>
 <form action="${pageContext.request.contextPath}/Home?action=addDishResult" method="post">
     Dish name:<br>
     <label>
         <input type="text" name="dishName" minlength="2" maxlength="25" title="Dish name" placeholder="Dish name"
-               value=""
+               value="${dish.name}"
                required>
     </label> <br>
     Size:<br>
     <label>
-        <input type="text" name="size" minlength="2" maxlength="25" title="Dish size" placeholder="Dish size" value=""
+        <input type="text" name="size" minlength="2" maxlength="25" title="Dish size" placeholder="Dish size" value="${dish.size}"
                required>
     </label> <br>
     Price:<br>
     <label>
         <input type="text" name="price" minlength="2" maxlength="25" title="Dish price" placeholder="Dish price"
-               value=""
+               value="${dish.price}"
                required>
     </label> <br>
     Client info:<br>
     <label>
         <input type="text" name="clientInfo" minlength="2" maxlength="25" title="Client info" placeholder="Client info"
-               value="" required>
+               value="${dish.clientInfo}" required>
     </label> <br>
     Staff info:<br>
     <label>
         <input type="text" name="staffInfo" minlength="2" maxlength="25" title="Staff info" placeholder="Staff info"
-               value="" required>
+               value="${dish.clientInfo}" required>
     </label> <br>
     <div id="parentId">
-        <div>
+        <c:forEach items="${dish.ingredientList}" var="list">
+            <div>
                 Add ingredient:<br>
                 <label>
-                    <input type="text" name="name" minlength="2" maxlength="25" title="Ingredient name"
-                           placeholder="Ingredient name" value="" required>
-                    <input type="text" name="quantity" minlength="2" maxlength="25" title="Quantity"
+                    <input type="text" name="name" minlength="2" maxlength="25" title="${list.name}"
+                           placeholder="Ingredient name" value="${list.name}" required>
+                    <input type="text" name="quantity" minlength="2" maxlength="25" title="${list.size}"
                            placeholder="Quantity"
-                           value="" required>
+                           value="${list.size}" required>
                 </label>
                 <a style="color:red;" onclick="return deleteField(this)" href="#">[-]</a>
                 <a style="color:green;" onclick="return addField()" href="#">[+]</a>
-        </div>
+            </div>
+        </c:forEach>
     </div>
     <br><br>
     <input type="submit" value="<fmt:message key="submit.button"/>">

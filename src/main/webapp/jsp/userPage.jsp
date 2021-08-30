@@ -6,7 +6,7 @@
 <fmt:setBundle basename="property.language"/>
 <jsp:include page="header.jsp"/>
 
-<fmt:message key="header.login.page"/>
+<fmt:message key="header.user.page"/>
 <br>
 <br>
 <c:choose>

@@ -16,6 +16,10 @@
     <br><br>
     <a href="${pageContext.request.contextPath}/Home?action=showAllUsers"><fmt:message key="users.list.page.link"/></a>
 </c:if>
+<c:if test="${sessionScope.user.role == 'STAFF'}">
+    <br><br>
+    <a href="${pageContext.request.contextPath}/Home?action=showAllUsers"><fmt:message key="users.list.page.link"/></a>
+</c:if>
 <br><br>
 <a href="${pageContext.request.contextPath}/Home?action=showUserOrders"><fmt:message key="user.orders.link"/></a>
 <br><br>

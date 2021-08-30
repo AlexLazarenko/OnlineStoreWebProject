@@ -32,7 +32,7 @@
                placeholder="<fmt:message key="placeholder.password"/>" value="" required>
     </label>
     <c:out value="${messages['password']}"/>
-
+    <c:out value="${messages['message']}"/>
     <br><br>
     <input type="submit" value=<fmt:message key="submit.button"/>>
 </form>

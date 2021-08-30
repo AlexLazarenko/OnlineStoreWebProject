@@ -18,7 +18,7 @@
 </style>
 <fmt:message key="header.forgot.password.page"/><br>
 
-<br><br>
+<br>
 <form action="${pageContext.request.contextPath}/Home?action=forgotPasswordResult" method="post">
 
     <fmt:message key="header.email"/><br>

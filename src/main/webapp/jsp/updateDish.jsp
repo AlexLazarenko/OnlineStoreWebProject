@@ -58,7 +58,7 @@
         Add ingredient:<br>
         <label>
             <input type="text" name="name" minlength="2" maxlength="25" title="${list.name}"
-                   placeholder="${list.name}" value="${list.name}" required>
+                   placeholder="Ingredient name" value="${list.name}" required>
             <input type="text" name="quantity" minlength="2" maxlength="25" title="${list.size}"
                    placeholder="Quantity"
                    value="${list.size}" required>

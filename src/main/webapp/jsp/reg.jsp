@@ -1,3 +1,4 @@
+<jsp:useBean id="user" scope="request" type="edu.epam.web.entity.User"/>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setLocale value="${language}"/>
@@ -23,7 +24,7 @@
     <fmt:message key="header.telephone.number"/><br>
     <label>
         <input type="text" name="telephone" pattern="\d{12}" placeholder="<fmt:message key="placeholder.telephone.number"/>"
-               title="<fmt:message key="title.telephone.number"/>" value="" required>
+               title="<fmt:message key="title.telephone.number"/>" value="${user.telephoneNumber}" required>
     </label>
     <jsp:useBean id="messages" scope="request" type="java.util.HashMap"/>
     <c:out value="${messages['telephone']}"/>
@@ -46,19 +47,20 @@
     <fmt:message key="header.surname"/><br>
     <label>
         <input type="text" name="surname" minlength="2" maxlength="25" title="<fmt:message key="title.surname"/>"
-               placeholder="<fmt:message key="placeholder.surname"/>" value="" required>
+               placeholder="<fmt:message key="placeholder.surname"/>" value="${user.surname}" required>
     </label>
     <br>
 
     <fmt:message key="header.name"/><br>
     <label>
-        <input type="text" name="name" minlength="2" maxlength="25" title="<fmt:message key="title.name"/>" placeholder="<fmt:message key="placeholder.name"/>" value="" required>
+        <input type="text" name="name" minlength="2" maxlength="25" title="<fmt:message key="title.name"/>" 
+               placeholder="<fmt:message key="placeholder.name"/>" value="${user.name}" required>
     </label>
     <br>
 
     <fmt:message key="header.birthday"/><br>
     <label>
-        <input type="date" name="birthday" min="1920-01-01" max="2021-01-01" value="" required>
+        <input type="date" name="birthday" min="1920-01-01" max="2021-01-01" value="${user.birthday}" required>
     </label>
     <br>
 
@@ -73,7 +75,7 @@
     <fmt:message key="header.email"/><br>
     <label>
         <input type="email" name="email" pattern="^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,7}"
-               title="<fmt:message key="title.email"/>" placeholder="<fmt:message key="placeholder.email"/>" value="" required>
+               title="<fmt:message key="title.email"/>" placeholder="<fmt:message key="placeholder.email"/>" value="${user.email}" required>
     </label>
     <c:out value="${messages['email']}"/>
     <br><br>
