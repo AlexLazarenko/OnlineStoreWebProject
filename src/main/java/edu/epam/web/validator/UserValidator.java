@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class UserValidator {
     private static final Logger logger = LogManager.getLogger(UserValidator.class);
-    public boolean isUser(String telephoneNumber, String surname, String name, Date birthday, String email) throws ValidatorException {
+    public boolean isUser(String telephoneNumber, String surname, String name, Date birthday, String email)  {
         return isTelephoneNumber(telephoneNumber) && isSurname(surname) && isName(name) &&
                 isBirthday(birthday) && isEmail(email);
     }

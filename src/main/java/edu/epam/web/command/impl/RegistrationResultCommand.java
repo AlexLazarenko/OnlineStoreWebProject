@@ -68,10 +68,15 @@ public class RegistrationResultCommand extends Command {
                     messages.put("message", "Registration successful, activate account by email, please");
                     MailSenderUtil.sendMessage(user.getEmail(), user.getName(), user.getSurname());
                 }
+            }else{
+                User user=factory.createNewUser(0, telephoneNumber,surname, name, birthday, gender, email, null);
+                request.setAttribute(RequestAttribute.USER,user);
             }
         } catch (ServiceException e) {
             logger.error(e);
             request.setAttribute(RequestAttribute.EXCEPTION, e.getMessage());
+            RequestDispatcher error = request.getRequestDispatcher(PagePath.ERROR_500);
+            error.forward(request,response);
         }
 
         request.setAttribute(RequestAttribute.MESSAGES, messages);

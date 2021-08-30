@@ -44,14 +44,14 @@ public class UpdateResultUserCommand extends Command {
         try {
             if (!email.equals(storedEmail)) {
                 if (daoService.findUserEmail(email) != null) {
-                    logger.warn("This email already exists");
-                    messages.put("email", "This email already exists");
+                    logger.warn("New email already exists");
+                    messages.put("email", "New email already exists");
                 }
             }
             if (!telephoneNumber.equals(storedTelephoneNumber)) {
                 if (daoService.findUserTelephoneNumber(telephoneNumber) != null) {
-                    logger.warn("This telephone number already exists");
-                    messages.put("telephone", "This telephone number already exists");
+                    logger.warn("New telephone number already exists");
+                    messages.put("telephone", "New telephone number already exists");
                 }
             }
             if (messages.isEmpty()) {
@@ -67,6 +67,8 @@ public class UpdateResultUserCommand extends Command {
         } catch (ServiceException e) {
             logger.error(e);
             request.setAttribute(RequestAttribute.EXCEPTION, e.getMessage());
+            RequestDispatcher error = request.getRequestDispatcher(PagePath.ERROR_500);
+            error.forward(request,response);
         }
         request.setAttribute(RequestAttribute.MESSAGES, messages);
         update.forward(request, response);

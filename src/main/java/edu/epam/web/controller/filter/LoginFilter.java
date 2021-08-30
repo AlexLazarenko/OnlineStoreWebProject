@@ -63,8 +63,6 @@ public class LoginFilter implements Filter {
             // pass the request along the filter chain
             filterChain.doFilter(request, response);
         } else {
-            System.out.println(request.getRequestURI()+CommandAction.ACTION_URL_PART+action);
-            System.out.println(forgotPassword);
             response.sendRedirect(loginURI);
         }
     }

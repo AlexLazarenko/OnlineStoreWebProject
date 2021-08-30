@@ -39,6 +39,8 @@ public class ActivateAccountCommand extends Command {
         }catch (ServiceException e){
             logger.error(e);
             request.setAttribute(RequestAttribute.EXCEPTION,e.getMessage());
+            RequestDispatcher error = request.getRequestDispatcher(PagePath.ERROR_500);
+            error.forward(request,response);
         }
         request.setAttribute(RequestAttribute.MESSAGES, messages);
         activate.forward(request, response);

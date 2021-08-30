@@ -33,6 +33,8 @@ public class ShowDishCommand extends Command {
         } catch (ServiceException e) {
             logger.error(e);
             request.setAttribute(RequestAttribute.EXCEPTION, e.getMessage());
+            RequestDispatcher error = request.getRequestDispatcher(PagePath.ERROR_500);
+            error.forward(request,response);
         }
         showDish.forward(request, response);
     }

@@ -15,7 +15,7 @@ public class UserFactory {
 
     public User createNewUser(int id, String telephoneNumber, String surname,
                            String name, Date birthday, UserGender gender, String email,
-                            String avatar) throws ValidatorException {
+                            String avatar)   {
         User user = null;
         if (validator.isUser( telephoneNumber, surname, name, birthday, email)) {
             user = new User(id, telephoneNumber, surname, name, birthday, gender, email,
@@ -27,7 +27,7 @@ public class UserFactory {
     public User createUser(int id, String telephoneNumber, String surname,
                               String name, Date birthday, UserGender gender, String email,
                               String avatar,BigDecimal statusPoint, UserRole userRole,UserStatus userStatus,
-                           AccountStatus accountStatus) throws ValidatorException {
+                           AccountStatus accountStatus)  {
         User user = null;
         if (validator.isUser( telephoneNumber, surname, name, birthday, email)) {
             user = new User(id, telephoneNumber, surname, name, birthday, gender, email,

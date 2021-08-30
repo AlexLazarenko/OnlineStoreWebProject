@@ -1,6 +1,7 @@
 package edu.epam.web.command.impl;
 
 import edu.epam.web.command.*;
+import edu.epam.web.entity.AccountStatus;
 import edu.epam.web.entity.Dish;
 import edu.epam.web.entity.User;
 import edu.epam.web.exception.ServiceException;
@@ -38,17 +39,26 @@ public class LoginResultCommand extends Command {
                 messages.put("telephone", "Unknown telephone number, please try again");
             }
             if (optionalUser.isPresent()) {
-                request.getSession().setAttribute(SessionAttribute.USER, optionalUser.get());
-                Map<Dish, Integer> map = new HashMap<>();
-                request.getSession().setAttribute(SessionAttribute.MAP, map);
-                response.sendRedirect(request.getContextPath() + PagePath.MAIN_SERVLET_URL);
-                return;
+                AccountStatus accountStatus = optionalUser.get().getAccountStatus();
+                if (accountStatus.equals(AccountStatus.NEW)) {
+                    messages.put("message", "Your account is not activated, please check your email for letter with activation link");
+                } else if (accountStatus.equals(AccountStatus.BAN)) {
+                    messages.put("message", "Your account is banned, please contact with administrator to solve this problem");
+                } else {
+                    request.getSession().setAttribute(SessionAttribute.USER, optionalUser.get());
+                    Map<Dish, Integer> map = new HashMap<>();
+                    request.getSession().setAttribute(SessionAttribute.MAP, map);
+                    response.sendRedirect(request.getContextPath() + PagePath.MAIN_SERVLET_URL);
+                    return;
+                }
             } else {
                 messages.put("password", "Wrong password, please try again");
             }
         } catch (ServiceException e) {
             logger.error(e);
             request.setAttribute(RequestAttribute.EXCEPTION, e.getMessage());
+            RequestDispatcher error = request.getRequestDispatcher(PagePath.ERROR_500);
+            error.forward(request,response);
         }
 
         request.setAttribute(RequestAttribute.MESSAGES, messages);
