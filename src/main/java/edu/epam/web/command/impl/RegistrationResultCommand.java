@@ -2,8 +2,7 @@ package edu.epam.web.command.impl;
 
 import edu.epam.web.command.*;
 import edu.epam.web.exception.CommandException;
-import edu.epam.web.model.entity.User;
-import edu.epam.web.model.entity.UserGender;
+import edu.epam.web.model.entity.*;
 import edu.epam.web.exception.EmailException;
 import edu.epam.web.exception.ServiceException;
 import edu.epam.web.model.factory.UserFactory;
@@ -21,6 +20,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class RegistrationResultCommand extends Command {
     private static final Logger logger = LogManager.getLogger(RegistrationResultCommand.class);
@@ -36,7 +36,7 @@ public class RegistrationResultCommand extends Command {
         String verifyPassword = EncryptPasswordUtil.encrypt(request.getParameter(RequestParameter.VERIFY_PASSWORD));
         String name = request.getParameter(RequestParameter.NAME);
         String surname = request.getParameter(RequestParameter.SURNAME);
-        Date birthday = null;
+        Date birthday;
         try {
             birthday = DateFormatUtil.formatStringToDate(request.getParameter(RequestParameter.BIRTHDAY));
         } catch (ParseException e) {
@@ -58,17 +58,22 @@ public class RegistrationResultCommand extends Command {
                 messages.put("message", "Registration failed, checking password fail");
             }
             if (messages.isEmpty()) {
-                User user = factory.createNewUser(0, telephoneNumber, surname, name, birthday, gender, email, null);
-                int flag = daoService.createUser(user, password);
-                if (flag == 0) {
-                    messages.put("message", "Registration failed, please try again");
-                    request.setAttribute(RequestAttribute.USER, user);
+                Optional<User> user = factory.createNewUser(0, telephoneNumber, surname, name, birthday, gender, email, null);
+                if (user.isPresent()) {
+                    int flag = daoService.createUser(user.get(), password);
+                    if (flag == 0) {
+                        messages.put("message", "Registration failed, please try again");
+                        request.setAttribute(RequestAttribute.USER, user);
+                    } else {
+                        messages.put("message", "Registration successful, activate account by email, please");
+                        MailSenderUtil.sendMessage(user.get().getEmail(), user.get().getName(), user.get().getSurname());
+                    }
                 } else {
-                    messages.put("message", "Registration successful, activate account by email, please");
-                    MailSenderUtil.sendMessage(user.getEmail(), user.getName(), user.getSurname());
+                    messages.put("message", "Validation failed, input correct data, please");
                 }
             } else {
-                User user = factory.createNewUser(0, telephoneNumber, surname, name, birthday, gender, email, null);
+                User user = new User(0, telephoneNumber, surname, name, birthday, gender, email, null,
+                        UserRole.CLIENT, "", UserStatus.SILVER, AccountStatus.NEW);
                 request.setAttribute(RequestAttribute.USER, user);
             }
         } catch (ServiceException | EmailException e) {

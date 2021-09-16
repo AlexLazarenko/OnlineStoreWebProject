@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,7 +23,7 @@ public class ShowAllUsersCommand extends Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
         UserService service = new UserServiceImpl();
-        List<User> allUsers = new ArrayList<>();
+        List<User> allUsers;
         try {
             allUsers = service.findUsers();
         } catch (ServiceException e) {

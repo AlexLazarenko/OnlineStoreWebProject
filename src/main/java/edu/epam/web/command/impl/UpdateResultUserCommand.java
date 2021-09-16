@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class UpdateResultUserCommand extends Command {
     private static final Logger logger = LogManager.getLogger(UpdateResultUserCommand.class);
@@ -33,7 +34,7 @@ public class UpdateResultUserCommand extends Command {
         String email = request.getParameter(RequestParameter.EMAIL);
         String name = request.getParameter(RequestParameter.NAME);
         String surname = request.getParameter(RequestParameter.SURNAME);
-        Date birthday = null;
+        Date birthday;
         try {
             birthday = DateFormatUtil.formatStringToDate(request.getParameter(RequestParameter.BIRTHDAY));
         } catch (ParseException e) {
@@ -57,14 +58,20 @@ public class UpdateResultUserCommand extends Command {
                 }
             }
             if (messages.isEmpty()) {
-                User user = factory.createUser(storedUser.getId(), telephoneNumber, surname, name, birthday, gender, email,
+                Optional<User> user = factory.createUser(storedUser.getId(), telephoneNumber, surname, name, birthday, gender, email,
                         storedUser.getAvatar(), storedUser.getStatusPoint(), storedUser.getRole(), storedUser.getUserStatus(),
                         storedUser.getAccountStatus());
-                int flag = daoService.updateUser(user);
-                if (flag == 0) {
-                    messages.put("message", "Update failed, please try again");
-                    request.setAttribute(RequestAttribute.USER, user);
-                } else messages.put("message", "Update successful");
+                if (user.isPresent()) {
+                    int flag = daoService.updateUser(user.get());
+                    if (flag == 0) {
+                        messages.put("message", "Update failed, please try again");
+                        request.setAttribute(RequestAttribute.USER, user);
+                    } else {
+                        messages.put("message", "Update successful");
+                    }
+                } else {
+                    messages.put("message", "Validation failed, input correct data, please");
+                }
             }
         } catch (ServiceException e) {
             logger.error(e);

@@ -10,11 +10,8 @@ import edu.epam.web.model.service.impl.UserServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UpdateUserRoleCommand extends Command {
@@ -23,7 +20,7 @@ public class UpdateUserRoleCommand extends Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
         UserService service = new UserServiceImpl();
-        List<User> allUsers = new ArrayList<>();
+        List<User> allUsers;
         int id = Integer.parseInt(request.getParameter(RequestParameter.ID));
         UserRole role = UserRole.valueOf(request.getParameter(RequestParameter.ROLE));
         try {

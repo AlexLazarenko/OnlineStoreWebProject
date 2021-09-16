@@ -30,7 +30,7 @@ public class AddDishResultCommand extends Command {
         String size = request.getParameter(RequestParameter.SIZE);
         String stringPrice = request.getParameter(RequestParameter.PRICE);
         if (BigDecimalValidator.validate(stringPrice)) {
-            BigDecimal price = new BigDecimal(stringPrice);//todo validation only numbers + .
+            BigDecimal price = new BigDecimal(stringPrice);
             String clientInfo = request.getParameter(RequestParameter.CLIENT_INFO);
             String staffInfo = request.getParameter(RequestParameter.STAFF_INFO);
             String[] names = request.getParameterValues(RequestParameter.NAME);
@@ -42,20 +42,24 @@ public class AddDishResultCommand extends Command {
                     ingredients.add(ingredient);
                 }
             }
-            Dish dish = dishFactory.createDish(0, dishName, size, price, clientInfo, staffInfo, null, DishStatus.NEW, ingredients);
-            try {
-                int result = service.createDish(dish);
-                if (result == 0) {
-                    logger.error("Add dish failed. Try again!");
-                    messages.put("message", "Add dish failed. Try again!");
-                    request.setAttribute(RequestAttribute.DISH, dish);
-                } else {
-                    logger.info("The dish was added successfully");
-                    messages.put("message", "the dish was added successfully");
+            Optional<Dish> dish = dishFactory.createDish(0, dishName, size, price, clientInfo, staffInfo, null, DishStatus.NEW, ingredients);
+            if (dish.isPresent()) {
+                try {
+                    int result = service.createDish(dish.get());
+                    if (result == 0) {
+                        logger.error("Add dish failed. Try again!");
+                        messages.put("message", "Add dish failed. Try again!");
+                        request.setAttribute(RequestAttribute.DISH, dish);
+                    } else {
+                        logger.info("The dish was added successfully");
+                        messages.put("message", "the dish was added successfully");
+                    }
+                } catch (ServiceException e) {
+                    logger.error(e);
+                    throw new CommandException(e);
                 }
-            } catch (ServiceException e) {
-                logger.error(e);
-                throw new CommandException(e);
+            } else {
+                messages.put("message", "Validation failed, input correct data, please");
             }
         } else {
             logger.error("Price is not correct!");

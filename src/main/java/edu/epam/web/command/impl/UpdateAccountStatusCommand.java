@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UpdateAccountStatusCommand extends Command {
@@ -21,7 +20,7 @@ public class UpdateAccountStatusCommand extends Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
         UserService service = new UserServiceImpl();
-        List<User> allUsers = new ArrayList<>();
+        List<User> allUsers;
         int id = Integer.parseInt(request.getParameter(RequestParameter.ID));
         AccountStatus status = AccountStatus.valueOf(request.getParameter(RequestParameter.ACCOUNT_STATUS));
         try {

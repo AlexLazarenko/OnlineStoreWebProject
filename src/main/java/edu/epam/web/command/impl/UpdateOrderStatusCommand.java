@@ -20,7 +20,7 @@ public class UpdateOrderStatusCommand extends Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
         OrderService service = new OrderServiceImpl();
-        List<Order> allOrders = new ArrayList<>();
+        List<Order> allOrders;
         int id = Integer.parseInt(request.getParameter(RequestParameter.ID));
         OrderStatus status = OrderStatus.valueOf(request.getParameter(RequestParameter.STATUS));
         try {

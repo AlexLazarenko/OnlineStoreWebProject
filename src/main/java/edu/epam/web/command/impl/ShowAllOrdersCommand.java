@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ShowAllOrdersCommand extends Command {
@@ -23,7 +22,7 @@ public class ShowAllOrdersCommand extends Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
         OrderService service = new OrderServiceImpl();
-        List<Order> allOrders = new ArrayList<>();
+        List<Order> allOrders;
         try {
             allOrders = service.findOrders();
         } catch (ServiceException e) {

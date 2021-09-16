@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -26,8 +25,8 @@ public class ShowUserOrdersByDateCommand extends Command {
         OrderService service = new OrderServiceImpl();
         User storedUser = (User) request.getSession().getAttribute(SessionAttribute.USER);
         int userId = storedUser.getId();
-        Date dateFrom = null;
-        Date dateTo = null;
+        Date dateFrom;
+        Date dateTo;
         try {
             dateFrom = DateFormatUtil.formatStringToDate(request.getParameter(RequestParameter.DATE_FROM));
             dateTo = DateFormatUtil.formatStringToDate(request.getParameter(RequestParameter.DATE_TO));
@@ -35,7 +34,7 @@ public class ShowUserOrdersByDateCommand extends Command {
             logger.error(e);
             throw new CommandException(e);
         }
-        List<Order> allOrders = new ArrayList<>();
+        List<Order> allOrders;
         try {
             allOrders = service.findOrders(userId, dateFrom, dateTo);
         } catch (ServiceException e) {

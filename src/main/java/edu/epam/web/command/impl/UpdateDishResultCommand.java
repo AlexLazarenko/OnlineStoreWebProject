@@ -14,10 +14,7 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UpdateDishResultCommand extends Command {//todo
     private static final Logger logger = LogManager.getLogger(UpdateDishResultCommand.class);
@@ -46,18 +43,22 @@ public class UpdateDishResultCommand extends Command {//todo
                     ingredients.add(ingredient);
                 }
             }
-            Dish dish = dishFactory.createDish(id, dishName, size, price, clientInfo, staffInfo, null, status, ingredients);
-            try {
-                int flag = service.updateDish(dish);
-                if (flag == 0) {
-                    messages.put("message", "Update dish failed, please try again");
-                    request.setAttribute(RequestAttribute.DISH, dish);
-                } else {
-                    messages.put("message", "Update dish successful");
+            Optional<Dish> dish = dishFactory.createDish(id, dishName, size, price, clientInfo, staffInfo, null, status, ingredients);
+            if (dish.isPresent()) {
+                try {
+                    int flag = service.updateDish(dish.get());
+                    if (flag == 0) {
+                        messages.put("message", "Update dish failed, please try again");
+                        request.setAttribute(RequestAttribute.DISH, dish);
+                    } else {
+                        messages.put("message", "Update dish successful");
+                    }
+                } catch (ServiceException e) {
+                    logger.error(e);
+                    throw new CommandException(e);
                 }
-            } catch (ServiceException e) {
-                logger.error(e);
-                throw new CommandException(e);
+            } else {
+                messages.put("message", "Validation failed, input correct data, please");
             }
         } else {
             logger.error("Price is not correct!");

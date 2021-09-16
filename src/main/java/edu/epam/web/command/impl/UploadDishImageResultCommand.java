@@ -19,7 +19,7 @@ import javax.servlet.http.Part;
 import java.io.IOException;
 import java.util.Optional;
 
-public class UploadDishImageResultCommand extends Command {//todo correct?????!!!!
+public class UploadDishImageResultCommand extends Command {
     private static final String PATH = PropertyReaderUtil.getPath();
     private static final Logger logger = LogManager.getLogger(UploadDishImageResultCommand.class);
 

@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ShowMenuCommand extends Command {
@@ -23,7 +22,7 @@ public class ShowMenuCommand extends Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
         DishService service = new DishServiceImpl();
-        List<Dish> dishList = new ArrayList<>();
+        List<Dish> dishList;
         try {
             dishList = service.findDishes();
         } catch (ServiceException e) {

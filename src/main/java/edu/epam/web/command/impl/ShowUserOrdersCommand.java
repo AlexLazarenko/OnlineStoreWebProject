@@ -23,7 +23,7 @@ public class ShowUserOrdersCommand extends Command {
         OrderService service = new OrderServiceImpl();
         User storedUser = (User) request.getSession().getAttribute(SessionAttribute.USER);
         int userId = storedUser.getId();
-        List<Order> allOrders = new ArrayList<>();
+        List<Order> allOrders;
         try {
             allOrders = service.findOrders(userId);
         } catch (ServiceException e) {
