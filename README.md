@@ -1,5 +1,5 @@
 # FinalWebProject
-Online store. Web MVC application with layered architecture. Using Servlet, JSP, JDBC, PostgreSQL.
+Online store. Web MVC application with layered architecture.
  * **Features**
       - Using database PostgreSQL
       - Servlet
@@ -22,33 +22,26 @@ Add ingredient       |               |                |*              |*
 Change language      | *             |*               |*              |*
 Change password      |               |*               |*              |*
 Delete ingredient    |               |*               |*              |*
-Change language      | *             |*               |*              |
-Load all categories  | *             |                |               |
-Load all products by category| *     |                |               |
-Confirm sign up      | *             |                |               |
-Sign in              | *             |                |               |
-Sign up              | *             |                |               |
-Sign out             | *             |                |               |
-Check login existence| *             |                |               |
-Load shopping cart   | *             |                |               |
-Add products to shopping cart| *     |                |               |
-Remove product from shopping cart| * |                |               |
-Create order         | *             |                |               |
-Load all orders      | *             |                |               |
-Load profile image   | *             |                |               |
-Remove profile image | *             |                |               |
-Update profile       | *             |                |               |
-Upload profile image | *             |                |               |
-Change password by email| *          |                |               |
-Change password by old password| *   |                |               |
-Create category      | *             |                |               |
-Create product       | *             |                |               |
-Load all clients     | *             |                |               |
-Remove category      | *             |                |               |
-Update category name | *             |                |               |
-Update client status | *             |                |               |
-Update order status  | *             |                |               |
-Update products category| *          |                |               |
-Update product info  | *             |                |               |
-Update product status| *             |                |               |
-Upload product image | *             |                |               |
+Forgot password      | *             |*               |*              |*
+Show home page       | *             |*               |*              |*
+Logout               |               |*               |*              |*
+Login                | *             |*               |*              |*
+Make order           |               |*               |*              |*
+Update account status|               |                |*              |*
+Update user          |               |*               |*              |*
+Update user role     |               |                |               |*
+Update dish          |               |                |*              |*
+Update order status  |               |                |*              |*
+Update user avatar   |               |*               |*              |*
+Update dish image    |               |                |*              |*
+Registration         | *             |*               |*              |*
+Show user page       |               |*               |*              |*
+Show all users       |               |                |*              |*
+Show all orders      |               |                |*              |*
+Show user orders     |               |*               |*              |*
+Show user orders by date|            |*               |*              |*
+Show orders by id&date|              |                |*              |*
+Show order by id     |               |                |*              |*
+Show menu page       | *             |*               |*              |*
+Show shopping cart   |               |*               |*              |*
+Update shopping cart |               |*               |*              |*
