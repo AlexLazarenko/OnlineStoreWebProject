@@ -1,27 +1,20 @@
 # FinalWebProject
 Online store. Web MVC application with layered architecture. Using Servlet, JSP, JDBC, PostgreSQL.
  * **Features**
-      - Deploying to Heroku
-      - Uploading images to Cloudinary
-      - Using database service JawsDB Mysql
-      - Vue.js
-      - Vuex
-      - Ajax
-      - Vuetify
+      - Using database PostgreSQL
       - Servlet
       - Custom connection pool and proxy connections
       - JSP
       - Maven
       - JSTL
       - Log4j2
-      - Pagination
       - Double validation
       - XSS attacks protection
       - Sending email via SMTP
       - Localization: EN, RU
       
-Command | GUEST’S SCOPE | CLIENT’S SCOPE | ADMIN’S SCOPE
----------| --------------|----------------|---------------
+Command | GUEST’S SCOPE | STAFF’S SCOPE | CLIENT’S SCOPE | ADMIN’S SCOPE
+---------| --------------||--------------------------------|---------------
 Passing by guest| * |   |
 Passing by client|  | * |
 Passing by admin|  |  | * |
