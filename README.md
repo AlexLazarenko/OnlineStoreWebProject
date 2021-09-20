@@ -14,7 +14,7 @@ Online store. Web MVC application with layered architecture. Using Servlet, JSP,
       - Localization: EN, RU
       
 Command | GUEST’S SCOPE | STAFF’S SCOPE | CLIENT’S SCOPE | ADMIN’S SCOPE
----------| --------------||--------------------------------|---------------
+---------| --------------|--------------------------------|---------------
 Passing by guest| * |   |   |
 Passing by client|  | * |   |
 Passing by admin|  |  | * |   |
