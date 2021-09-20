@@ -15,13 +15,13 @@ Online store. Web MVC application with layered architecture.
       
 Command              | GUEST’S SCOPE | CLIENT’S SCOPE | STAFF’S SCOPE | ADMIN’S SCOPE
 ---------------------| --------------|----------------|---------------|---------------
-Activate account     |               |                |*              |*
+Activate account     |               |*               |*              |*
 Add dish             |               |                |*              |*
 Add dish to shopping cart|           |*               |*              |*
 Add ingredient       |               |                |*              |*
 Change language      | *             |*               |*              |*
 Change password      |               |*               |*              |*
-Delete ingredient    |               |*               |*              |*
+Delete ingredient    |               |                |*              |*
 Forgot password      | *             |*               |*              |*
 Show home page       | *             |*               |*              |*
 Logout               |               |*               |*              |*
