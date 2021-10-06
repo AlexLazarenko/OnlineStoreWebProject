@@ -1,4 +1,4 @@
-# FinalWebProject
+# OnlineStoreWebProject
 Online store. Web MVC application with layered architecture.
  * **Features**
       - Using database PostgreSQL
